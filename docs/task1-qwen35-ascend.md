@@ -1,8 +1,37 @@
-# Task 1：Qwen3.5-0.8B 在 Ascend 910C 单 chip 上的计算适配
+# 智能计算系统第一阶段实验报告
+
+## Qwen3.5-0.8B 在 Ascend 910C 单 chip 上的计算适配、正确性与性能基线
+
+报告定稿与任务复核日期：2026-10-23。实验对象为 Qwen3.5-0.8B 的文本生成路径。
+
+### 摘要
 
 本实验在 [jiuxiyan/tokenspeed](https://github.com/jiuxiyan/tokenspeed) 的原始 Engine 上完成文本计算路径适配。代码基准为 `070dab022dc9879474b37fba2d95ab5d12f0534e`，工作分支为 `task1-qwen35-ascend`。实现、分层验证、完整推理和性能测量均使用同一运行路径。
 
-最终实现已通过 251 项算子/配置回归及完整 224 步同精度模型验收，top-1 全部一致，A→B→A 的 32 步 logits 逐位相同。参考采用官方 HF 计算及显式 FP32 recurrent cache；此前默认 BF16 cache 的失败结果保留。四组性能矩阵、128-token 连续生成 HBM 和短/长 Prefill、Decode 追踪均已实测。
+实验补齐 Ascend Gated DeltaNet（GDN）路径，修正卷积片上缓冲区限制及 BF16 中间舍入边界，并保留原 Engine、权重加载和统一缓存生命周期。最终实现通过 251 项算子/配置回归与 33 项实验工具测试，共 284 项；完整模型的 224 步同精度验收最大相对 L2 误差为 0.01957169，top-1 全部一致，A→B→A 的 32 步 logits 逐位相同。
+
+四组正常性能测量中，32-token 输入的 TTFT 中位数为 275.762–276.334 ms，512-token 输入为 529.659–540.531 ms，Decode TPOT 为 71.714–73.610 ms。独立同步诊断中，forward 范围最大 allocated 为 1.998 GiB。分块 GDN 将长输入 TTFT 降低约 68%；最终 trace 显示长 Prefill 的主要设备算子热点转为 causal convolution。短输入及 Decode 性能仍有回退，报告保留这一结果。
+
+**验收结论：`task1.md` 的四项核心要求及实施检查项，在下述明确范围内已完成。** 正确性参考采用“官方 HF 计算 + 显式 FP32 recurrent-cache policy”；默认 HF BF16 recurrent cache 的兼容性对照未通过原 2% L2 门槛，不能将本结论理解成所有精度、所有上下文或所有运行模式均通过。
+
+### 任务要求逐项核验
+
+本次复核逐条核对当前 `task1.md`，并将结论对应到代码、逐步 JSON/CSV、测试日志及运行清单；未把计划、脚本支持的选项或历史失败标记为已完成。原始日志用于校验来源，公开摘要用于复算统计。本次报告整理不改变模型计算、数值阈值或已有原始测量。
+
+| 任务要求 | 核验证据与本报告位置 | 结论 |
+| --- | --- | --- |
+| 建立环境、基础算子可用、记录版本和启动方式 | 第 1 节；依赖约束、环境脚本；真机模块测试 | 已完成 |
+| 单个 chip 执行模型主要计算 | 单设备可见性、TP/DP=1；文本参数全在 NPU；实际 NPU trace | 已完成，限定文本 eager 路径 |
+| 权重加载、Prefill、Decode 和完整连续推理 | 权重覆盖审计；7 个请求各 32 输出；性能最长 128 输出；第 5 节 | 已完成 |
+| 支持表包含功能、形状、dtype、来源、状态和测试 | 第 2 节逐模块支持表；第 5.3 节测试覆盖 | 已完成 |
+| 关键模块调用路径、布局、状态更新和同步 | 第 3 节 GDN 公共 kernel 路径、K-first/K-last 转换、读写槽和同步说明 | 已完成 |
+| 关键算子典型及边界形状、可信参考 | CPU FP64/FP32 独立数学参考与官方同设备对照；251 项回归 | 已完成 |
+| 固定权重、精度、输入、生成配置与误差判据 | 固定文件 revision/hash；第 1、5 节；完整 224 步、全词表对照 | 已完成，显式 FP32 recurrent-cache 参考 |
+| 多步状态更新与请求隔离 | conv 多步、GDN 分段/交换槽/负索引；A1/A2 全部 32 步 logits 精确相同 | 已完成，单请求槽位复用范围 |
+| 两档输入 × 两档生成，区分 Prefill/Decode，记录 TTFT/TPOT/HBM | 第 6 节；32/512 × 32/128；20 次正式测量、256 次诊断 forward | 已完成 |
+| 根据测量解释瓶颈、说明复用/修改、障碍与下一步 | 第 4、7、8 节；四窗 trace、前后性能和数值重验 | 已完成；未据此断言 HBM 带宽受限 |
+
+当前任务文件未要求组员署名、教学网提交、视觉输入、多 chip 或图捕获，因此不将这些项目列为欠缺的必需交付。尚未通过的默认 HF 缓存兼容性、未覆盖的运行模式及性能局限在正文中单独保留。
 
 ## 1. 范围、环境与可复现入口
 
@@ -11,7 +40,7 @@
 | 项目 | 固定配置/实测版本 |
 | --- | --- |
 | 设备 | Ascend 910C，框架报告 Ascend910_9362；仅暴露逻辑 chip 5，即物理 NPU 2 / chip 1，worker 内编号 0 |
-| 内存容量 | 设备物理 HBM 65536 MiB；框架报告可用总容量 62748 MiB，二者口径不同 |
+| 内存容量 | 设备 HBM 65536 MB（npu-smi 原标注，不推断十进制/二进制）；框架报告可用总容量 62748 MiB，二者口径不同 |
 | 系统 | openEuler 24.03 LTS-SP3，aarch64，Linux 5.10.0 |
 | 驱动 / CANN | 25.5.2 / 9.0.0 |
 | Python / torch / torch_npu | 3.11.16 / 2.9.0+cpu / 2.9.0.post2 |
@@ -35,7 +64,9 @@ python -m examples.task1_qwen35.run_engine \
   --output "$HOME/task1/results/chat-reproduction"
 ```
 
-复现者应根据实际分配选择 chip；每次使用新结果目录。运行清单记录启动参数、输入/输出 IDs、权重校验和实际 runtime/kernel/scheduler/实验代码逐文件 SHA256。源代码归档部署读取 `BASE_COMMIT` 并记录源码清单，不把无 `.git` 的目录误称为干净 checkout。
+复现者应根据实际分配选择 chip；每次使用新结果目录。运行清单记录启动参数和实际 runtime/kernel/scheduler/实验代码逐文件 SHA256，样本文件记录输入/输出 IDs；权重文件校验值另由固定的 `model_manifest.json` 和下载器保证。源代码归档部署读取 `BASE_COMMIT` 并记录源码清单，不把无 `.git` 的目录误称为干净 checkout。
+
+本次复核对应已发布实现提交 `4c6ccee8e4861ba1062f7b13336fd9c8e60adef4`。实际模型实验在此前归档部署上执行，其代码身份以逐次 source manifest 为准；格式化和 chat 输入修复的对应关系见 [源码一致性记录](../examples/task1_qwen35/results/final_source_equivalence.json)。报告定稿仅更新文档与图表，不将整理日期写成重新进行硬件实验的日期。
 
 ## 2. 计算路径与算子支持表
 
@@ -115,6 +146,8 @@ Decode 先 gather 所有 source rows，再进行任何目标写入，因此两�
 
 完整判据见 [数值协议](task1-numerical-protocol.md)，在读取端到端结果前固定，后续未放宽：每步全词表 logits finite，max absolute ≤0.5，relative L2 ≤0.02，cosine ≥0.999；全步骤 top-1 agreement ≥95%。BF16 舍入和 24 层积累是工程阈值的依据，但不是理论误差上界；必须保留失败与逐步指标。
 
+设某一步 Engine 与参考的全词表 logits 分别为向量 x、r，指标为 `max_abs=max(|x−r|)`、`relative_L2=||x−r||₂/||r||₂`、`cosine=(x·r)/(||x||₂||r||₂)`。先验证所有元素有限，再计算误差；不删除不匹配词项、不掩盖 NaN/Inf。相对 L2 的分母固定为参考向量范数，top-1 用整向量 argmax 判定，A1/A2 隔离则使用更严格的逐元素精确相等。
+
 算子层以 CPU FP64/FP32 数学表达式和同设备官方边界作互补对照。GDN 对相同量化 q/k，FP32 state 使用 `atol=2e-6, rtol=2e-5`，FP32 output 使用 `2e-6/1e-4`，BF16 output 使用 `1e-3/8e-3`。块状与任意分段的浮点归约顺序不同，因此用既定数值阈值比较；只读初态、无关槽、padding、复制的卷积历史以及相同请求复跑仍要求精确一致。
 
 BF16 CPU/NPU rsqrt 的个别值可能相差 1 ULP；归一化单独对照并保留完整输出验证，不能放宽 FP32 state 阈值掩盖该差异。Attention/RoPE 对独立 CPU FP32 使用 BF16 `atol=rtol=0.02`，同时增加 staged HF 同设备逐位测试。norm/gate BF16 对 CPU double 为 `0.01/0.01`，FP32 为 `2e-5/2e-5`，另有严格的 offset 和中间舍入回归。
@@ -174,9 +207,13 @@ BF16 CPU/NPU rsqrt 的个别值可能相差 1 ULP；归一化单独对照并保�
 | A1 / A2（各 32 输入） | 各 32 | 0 | 0 | 0.99997497 |
 | B（65 输入） | 32 | 0.1875 | 0.01658129 | 0.99984896 |
 
-所有 case 均满足原门槛；长输入最大 relative L2 距 0.02 较近，结论仅覆盖这些固定输入/配置，不宣称所有上下文逐位一致。cosine 由 NPU FP32 归约计算，即使 logits 完全相同，数值也可能略低于 1；abs/relative L2 和隔离检查同时保留。
+所有 case 均满足原门槛；长输入最大 relative L2 距 0.02 较近，结论仅覆盖这些固定输入/配置，不宣称所有上下文逐位一致。比较脚本先将两端 logits 移至 CPU，数值指标由 CPU FP32 归约计算；即使 logits 完全相同，cosine 数值也可能略低于 1。abs/relative L2 和隔离检查同时保留。
 
 最终实现另跑官方默认 BF16 recurrent cache 兼容性对照：仍为 224/224 top-1 一致，但最大 abs=0.481330872、relative L2=0.03434195、最小 cosine=0.99945563，未通过同一 2% L2 门槛。该轮完整跑了 224 步，但不属于 FP32-state 主验收范围；它的失败不会被主验收通过覆盖。适配保留 FP32 状态的选择和参考差异必须一并说明。
+
+![224 步全词表相对 L2 误差及两种参考缓存策略](figures/task1-logit-error.svg)
+
+图 1：由 [主验收逐步记录](../examples/task1_qwen35/results/final_correctness_steps.csv) 与 [默认缓存兼容性记录](../examples/task1_qwen35/results/final_stock_correctness_steps.csv) 绘制。每段含 1 次 Prefill 和 31 次 Decode；红线为原定 0.02 门槛。两条曲线分别对应不同的参考状态保存精度，不能合并统计。默认缓存对照有 14 步超过 L2 门槛。
 
 四个自然对话样例（中文、英文、Python 加法、整数算术）分别生成 101/40/13/19 tokens，均在 EOS 正常结束。Python 输出 `return a + b`，算术结果为 110；中文对 Prefill 的解释存在事实错误，英文只回答一句，算术也未遵循“只回答整数”。这些原始文本仅作为 Engine 连续生成 smoke，不能当作语义或指令遵循评测通过。`chat02` 修复了 Transformers 5.12 模板默认返回 BatchEncoding 的接口变化：显式返回并校验 `list[int]`，两项真实 tokenizer/MessagePack 回归通过；固定 token 的精度和性能路径不受此变更影响。样例未预热，其耗时不进入性能表。
 
@@ -230,6 +267,10 @@ Profiler Level 0 不提供 AIC 硬件利用率；采集结束时出现 RECORD st
 
 长输入 TTFT 降低约 68%（约 3.1–3.2 倍加速），短输入 TTFT 与 Decode 变慢。分块并非所有形状都更快：短请求也要处理一个 64-token 块及其三角行更新，K-first 连续化增加布局操作。新版本优先确保完整数值验收；不能把旧版未通过主精度协议的性能当作可替代最终正确实现。两轮位于共享服务器的不同时段，host 调度有抖动；仅据五次测量不能将全部回退精确归因给单一算子。
 
+![分块 GDN 前后首 Token 延迟与 Decode TPOT](figures/task1-latency.svg)
+
+图 2：由 [旧版基准](../examples/task1_qwen35/results/baseline_benchmark.json) 与 [最终基准](../examples/task1_qwen35/results/final_benchmark.json) 绘制；柱高为中位数，误差线为五次正式测量的最小值至最大值。左图 TTFT 与右图 TPOT 各自从零起算、使用不同纵轴。旧版未通过主精度协议，其数据仅用于解释优化过程。
+
 以下统一使用 host→device flow 关联的设备事件数，包含相应拷贝事件，不与 kernel CSV 行数混用：
 
 | 单个 forward | 旧设备事件数 | 新设备事件数 | 旧设备事件时间并集 ms | 新设备事件时间并集 ms |
@@ -247,7 +288,37 @@ Profiler Level 0 不提供 AIC 硬件利用率；采集结束时出现 RECORD st
 
 上述归因使用已经导出的实际事件；四窗未匹配 flow 为 0，仅说明选中关联自洽，不证明 profiler 捕获了全部硬件活动。原始计数、operator 表与采集警告见公开 results。
 
-## 8. 交付与复现索引
+## 8. 实验结论与后续工作
+
+本阶段建立了可复现的单 chip 文本推理路径，完成权重加载、Prefill、连续 Decode、状态生命周期和分层数值验收，并留下可比较的性能基线。关键适配经验是：混合模型的正确性既取决于算子数学，也取决于 BF16 中间舍入、recurrent state 的实际保存精度、布局与请求槽生命周期。仅检查生成文本一致或递推函数内部 dtype，不足以验收完整计算系统。
+
+任务必需项在声明范围内达成；下列内容仍是边界或后续工作，不能写成已经通过：
+
+| 后续工作 | 当前证据及优先级 | 完成时应增加的验证 |
+| --- | --- | --- |
+| 优化长 Prefill causal convolution | 第一优先级；512-token 窗口的 18 次卷积占选中设备事件时间并集约 69.3% | 保留全部 6144 通道、FP32 乘加及 BF16 边界；卷积边界/多步测试、224 步主验收和四组性能复测 |
+| 减少 GDN copy、状态布局转换与 Decode 小算子 | 第二优先级；长 Prefill 4263 次 copy，单步 Decode 2331 个关联设备事件 | 先分离索引、连续化、同步和启动成本，再用无 profiler 的 TTFT/TPOT 判断收益 |
+| 明确默认 HF BF16-cache 兼容方案 | 当前 224 步 top-1 一致，但 14 步超过 2% L2 门槛；保持为独立失败结果 | 如需支持，显式增加 BF16 state 选择并重做状态、隔离及完整模型验收，不默默更换主协议 |
+| 扩大场景覆盖 | 当前仅固定长度、单请求与单槽复用；max_model_len=2048 是配置上限，并非已验证 2048-token 输入 | 增加更长输入、并发、内存压力下抢占恢复；图捕获、视觉及多 chip 分别建立独立协议 |
+
+优化版本只有再次通过原正确性门槛后，才能替换本阶段基线。当前缺少 AIC/带宽计数，不将事件时长直接解释为算力或 HBM 带宽利用率。
+
+## 9. 交付与复现索引
+
+建议按以下顺序复现：固定环境和权重 → 251 项模块/配置回归与 33 项工具回归 → 完整 Engine 轨迹 → 显式 FP32-cache HF 对照 → 四组无 profiler 性能 → 128-token 无 profiler HBM 诊断 → 独立 8-token profiler。每次使用新输出目录，避免覆盖历史。默认 HF cache 的兼容性对照单独保存，并预期如本报告所示可能返回数值失败。
+
+| 结论/材料 | 直接证据入口 |
+| --- | --- |
+| 权重、环境与源码身份 | [固定模型清单](../examples/task1_qwen35/model_manifest.json)、[实际参数覆盖](../examples/task1_qwen35/results/final_weight_audit.json)、[源码对应关系](../examples/task1_qwen35/results/final_source_equivalence.json) |
+| 284 项唯一测试结果 | [tests_summary.json](../examples/task1_qwen35/results/tests_summary.json)，统一 33 项复跑为补充确认，不重复计数 |
+| 224 步主数值验收与请求隔离 | [final_correctness.json](../examples/task1_qwen35/results/final_correctness.json) 与其逐步 CSV |
+| 默认缓存兼容性及失败历史 | [最终 stock 对照](../examples/task1_qwen35/results/final_stock_correctness.json)、[五轮默认缓存结果](../examples/task1_qwen35/results/stock_hf_rounds.json)、[两轮 FP32-cache 历史失败](../examples/task1_qwen35/results/fp32_reference_history.json) |
+| 四组性能与原始采样 | [final_benchmark.json](../examples/task1_qwen35/results/final_benchmark.json)、[20 次正式样本](../examples/task1_qwen35/results/final_benchmark_samples.csv)；完整到达时间见各组 final_samples 文件 |
+| HBM 与阶段计时 | [final_diagnostics.json](../examples/task1_qwen35/results/final_diagnostics.json)、[256 次 forward](../examples/task1_qwen35/results/final_diagnostic_steps.csv) |
+| 瓶颈与采集限制 | [final_profile_summary.json](../examples/task1_qwen35/results/final_profile_summary.json) 及关联的窗口/算子 CSV；含采集警告 |
+| 自然语言推理 smoke | [final_chat_smoke.json](../examples/task1_qwen35/results/final_chat_smoke.json)，保留原始提示和回答，不等于语义质量验收 |
+
+代码阅读入口：原 [Qwen3.5 模型](../python/tokenspeed/runtime/models/qwen3_5.py)、[GDN runtime 接入](../python/tokenspeed/runtime/layers/attention/linear/gdn.py)、[统一状态 recipe](../python/tokenspeed/runtime/layers/attention/kv_cache/recipes/qwen35.py)、[NPU GDN leaf](../tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/ops/gdn.py)、[分块数学 helper 与来源说明](../tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/thirdparty/qwen35_gdn.py)、[causal conv kernel](../tokenspeed-kernel/python/tokenspeed_kernel/ops/conv/_triton/causal_conv1d.py)。
 
 - [运行、安装、测试和实验命令](../examples/task1_qwen35/README.md)
 - [原始数值阈值、失败历史和缓存精度勘误](task1-numerical-protocol.md)
@@ -255,4 +326,4 @@ Profiler Level 0 不提供 AIC 硬件利用率；采集结束时出现 RECORD st
 - [GDN 算子契约与算法](../tokenspeed-kernel/python/tokenspeed_kernel/ops/attention/gdn/README.md)
 - [NPU attention 的精度与支持边界](../tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/ops/README.md)
 
-原始日志、JUnit、运行清单和诊断 JSON 保存在实验工作区；大型全词表 logits/逐层张量保留于远端实验目录，通过逐文件 SHA256 对应公开摘要。公共仓库不包含私人服务器账号、主机地址、绝对私有路径或其他用户进程快照。最终执行仓库要求的 `pre-commit run --all-files`，代码和结果保存在任务分支；具体提交号可通过该分支 Git 历史查看。
+原始日志、JUnit、运行清单和诊断 JSON 保存在实验工作区，其来源文件通过公开摘要记录的 SHA256 关联。大型全词表 logits/逐层张量保留于远端实验目录；本次没有为每个大型张量单独建立公开哈希清单。公共仓库不包含私人服务器账号、主机地址、绝对私有路径或其他用户进程快照。提交前执行仓库要求的 `pre-commit run --all-files`，代码和结果保存在任务分支；具体文档修订提交号可通过该分支 Git 历史查看。

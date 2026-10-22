@@ -136,15 +136,26 @@ python -m examples.task1_qwen35.run_engine \
 python -m examples.task1_qwen35.run_engine \
   --model "$HOME/task1/models/Qwen3.5-0.8B" \
   --output "$HOME/task1/results/diagnostic" --mode diagnostic \
-  --input-lengths 32 512 --decode-steps 8 \
+  --input-lengths 32 512 --decode-steps 128 --warmups 2 \
   2>&1 | tee "$HOME/task1/logs/diagnostic.log"
 python -m examples.task1_qwen35.summarize_diagnostics \
   --run "$HOME/task1/results/diagnostic" \
   --output "$HOME/task1/results/diagnostic/summary.json"
 ```
 
-另用新目录重复运行并加 `--profile`，各输入的第一个 Prefill/Decode forward
-会生成 `torch_npu.profiler` trace。分析 operator/CPU 调度空洞/转换时间；带 profiler
+以上命令与最终 HBM 表的工作量一致：每个输入长度生成 128 tokens，共 1 次
+Prefill 和 127 次 Decode；不启用 profiler。算子追踪使用独立目录和较短的
+8-token 请求，各输入只采集第一个 Prefill/Decode forward：
+
+```bash
+python -m examples.task1_qwen35.run_engine \
+  --model "$HOME/task1/models/Qwen3.5-0.8B" \
+  --output "$HOME/task1/results/profile" --mode diagnostic --profile \
+  --input-lengths 32 512 --decode-steps 8 --warmups 2 \
+  2>&1 | tee "$HOME/task1/logs/profile.log"
+```
+
+上述命令生成 `torch_npu.profiler` trace。分析 operator/CPU 调度空洞/转换时间；带 profiler
 的 forward 标记为 `profiled=true`，汇总排除其耗时。同步诊断也会改变 overlap，
 不得替代正常性能主矩阵。
 每种诊断输入先执行 `--warmups` 次完整请求（默认 2 次），预热期间关闭 worker
