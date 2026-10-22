@@ -206,7 +206,11 @@ def triton_causal_conv1d_prefill(
         assert (dim, width) == weight.shape
         assert is_channel_last, "Need to run in channel-last layout"
 
-    grid = (batch_ptr.numel(), triton.cdiv(dim, 256))
+    # The 64x256 GPU tile exceeds the Ascend 910C unified buffer once the
+    # four convolution taps and SiLU temporaries are live. Keep the existing
+    # token metadata and reduce only the independent channel tile on NPU.
+    block_n = 64 if x.device.type == "npu" else 256
+    grid = (batch_ptr.numel(), triton.cdiv(dim, block_n))
     _causal_conv1d_fwd_kernel[grid](
         # Pointers to matrices
         x,
@@ -241,13 +245,14 @@ def triton_causal_conv1d_prefill(
         HAS_BIAS=bias is not None,
         KERNEL_WIDTH=width,
         SILU_ACTIVATION=activation in ["silu", "swish"],
+        ROUND_BEFORE_ACTIVATION=x.device.type == "npu",
         HAS_INITIAL_STATES=has_initial_state is not None,
         HAS_CACHE=conv_states is not None,
         IS_CONTINUOUS_BATCHING=cache_indices is not None,
         USE_PAD_SLOT=pad_slot_id is not None,
         NP2_STATELEN=np2_statelen,
         BLOCK_M=prefill_metadata.block_m,
-        BLOCK_N=256,
+        BLOCK_N=block_n,
         num_stages=2,
         ENABLE_PDL=enable_pdl,
         **({"launch_pdl": True} if enable_pdl else {}),
@@ -462,6 +467,7 @@ def triton_causal_conv1d_update(
         HAS_BIAS=bias is not None,
         KERNEL_WIDTH=width,
         SILU_ACTIVATION=activation in ["silu", "swish"],
+        ROUND_BEFORE_ACTIVATION=x.device.type == "npu",
         IS_CONTINUOUS_BATCHING=conv_state_indices is not None,
         IS_SPEC_DECODING=num_accepted_tokens is not None,
         NP2_STATELEN=np2_statelen,

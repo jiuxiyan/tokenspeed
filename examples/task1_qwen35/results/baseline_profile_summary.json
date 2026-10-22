@@ -1,0 +1,616 @@
+{
+  "schema_version": 1,
+  "implementation": "sequential eager GDN baseline",
+  "profile_selection": "host-to-device",
+  "environment": {
+    "python": "3.11.16",
+    "packages": {
+      "torch": "2.9.0+cpu",
+      "torch-npu": "2.9.0.post2",
+      "transformers": "5.12.0",
+      "triton-ascend": "3.2.1",
+      "tokenspeed-scheduler": "0.1.40"
+    }
+  },
+  "code_identity": {
+    "baseline_commit": "070dab022dc9879474b37fba2d95ab5d12f0534e",
+    "source_manifest_sha256": "19e4daac318ffd2a20479db9205e88da863e66ec0d0d5f95a98598a76fde8ffc",
+    "gdn_source_sha256": "09c558fefd917e8e9e701f82f4638471584b14ba79361c8ccd298556a86be846",
+    "benchmark_driver_source_sha256": "837dd5473bd7420aadf6340ed494037cf5845a30d73c6b7a24f61d3dec0e01f5",
+    "worker_observer_source_sha256": "e18f8f081c72c3909cf81f0522b68eb75ee3817b166a2b9f693e12f49093daf1"
+  },
+  "same_source_manifest_as_uninstrumented_benchmark": true,
+  "completed": true,
+  "source_manifest": {
+    "evidence_id": "baseline_profile_manifest",
+    "raw_sha256": "113b036165439b49ba214a87b5ef917b3f162da2c8e0ede44cf21a43d03a3986"
+  },
+  "source_log": {
+    "evidence_id": "baseline_profile_log",
+    "raw_sha256": "6c425c43e663c67fe81c810cd51b9750dd3744a87ec7fa6e8b407dcf1b1e1889"
+  },
+  "warnings": {
+    "aic_metrics_unavailable": "Level0 profiling resets AIC metrics to None; this evidence does not measure hardware utilization.",
+    "stop_while_record_warning_count": 4,
+    "potentially_incomplete_parsed_data": true,
+    "incomplete_memory_warning_count": 4,
+    "incomplete_memory_records_reported_per_capture": 8,
+    "memory_evidence_policy": "No profiler memory records or worker HBM fields from this run are exported as memory evidence. Use a separate non-profiler diagnostic run.",
+    "completeness_limit": "Zero unmatched HostToDevice flows validates observed-event linkage only. It does not override the stop-state warning or prove that all activity was captured."
+  },
+  "interpretation": {
+    "timing": "Profiling adds overhead. Trace spans and profiled model_forward_ms are instrumented observations, never substituted for the normal benchmark TTFT/TPOT.",
+    "busy_union": "Union of observed, uniquely linked device event intervals. It is timeline coverage of the selected event subset, not chip/AI Core utilization or a memory-bandwidth measurement.",
+    "durations": "Cumulative event durations can overlap; only interval union removes simultaneous execution. Framework Total includes children and is not additive across operators.",
+    "timestamps": "Absolute timestamps, process IDs, physical device IDs and process metadata are omitted. Only duration/span/interval-union aggregates are public.",
+    "scope": "Only first Prefill and first Decode forward at each input length were profiled. Do not generalize this to all later decode steps."
+  },
+  "windows": [
+    {
+      "window": "input_32_decode",
+      "input_tokens": 32,
+      "phase": "decode",
+      "request_output_tokens": 8,
+      "captured_model_forwards": 1,
+      "capture_point": "first decode forward",
+      "profiled_model_forward_ms": 156.80107986554503,
+      "same_run_six_unprofiled_decode_forwards_ms": [
+        64.32621995918453,
+        58.35024989210069,
+        57.88587010465562,
+        56.658440036699176,
+        57.34758009202778,
+        58.066180208697915
+      ],
+      "whole_trace_complete_event_span_us": 156444.775,
+      "linked_device_events": {
+        "event_count": 2295,
+        "summed_duration_us": 12790.8,
+        "union_busy_us": 12790.8,
+        "span_us": 155935.76,
+        "gap_us": 143144.96,
+        "largest_gap_us": 911.06,
+        "busy_fraction_within_selected_event_span": 0.08202608561371683,
+        "overlap_multiplicity_us": 0.0
+      },
+      "kernel_csv_intervals": {
+        "event_count": 2229,
+        "summed_duration_us": 12752.28,
+        "union_busy_us": 12752.28,
+        "span_us": 155935.76,
+        "gap_us": 143183.48,
+        "largest_gap_us": 911.06,
+        "busy_fraction_within_selected_event_span": 0.0817790608132477,
+        "overlap_multiplicity_us": 0.0
+      },
+      "unmatched_flow_count": 0,
+      "kernel_type_field_quality": "All kernel_details Type and Accelerator Core values are N/A at this profiling level. Use exported kernel/operator names and explicit trace Task Type labels; do not infer AIC metrics.",
+      "top_ten_device_self_operators": [
+        {
+          "name": "_causal_conv1d_update_kernel",
+          "count": 18,
+          "Host Self Duration(us)": 233.65,
+          "Host Total Duration(us)": 233.65,
+          "Device Self Duration(us)": 2938.72,
+          "Device Total Duration(us)": 2938.72
+        },
+        {
+          "name": "aclnnIndex",
+          "count": 66,
+          "Host Self Duration(us)": 567.75,
+          "Host Total Duration(us)": 567.75,
+          "Device Self Duration(us)": 2067.28,
+          "Device Total Duration(us)": 2067.28
+        },
+        {
+          "name": "aclnnMatmul",
+          "count": 109,
+          "Host Self Duration(us)": 818.59,
+          "Host Total Duration(us)": 818.59,
+          "Device Self Duration(us)": 1704.66,
+          "Device Total Duration(us)": 1704.66
+        },
+        {
+          "name": "aclnnMul",
+          "count": 404,
+          "Host Self Duration(us)": 3149.75,
+          "Host Total Duration(us)": 3149.75,
+          "Device Self Duration(us)": 1664.56,
+          "Device Total Duration(us)": 1664.56
+        },
+        {
+          "name": "aclnnReduceSum",
+          "count": 72,
+          "Host Self Duration(us)": 562.63,
+          "Host Total Duration(us)": 562.63,
+          "Device Self Duration(us)": 690.04,
+          "Device Total Duration(us)": 690.04
+        },
+        {
+          "name": "aclnnInplaceCopy",
+          "count": 489,
+          "Host Self Duration(us)": 4522.5,
+          "Host Total Duration(us)": 4522.5,
+          "Device Self Duration(us)": 486.22,
+          "Device Total Duration(us)": 486.22
+        },
+        {
+          "name": "aclnnInplaceIndexCopy",
+          "count": 18,
+          "Host Self Duration(us)": 131.65,
+          "Host Total Duration(us)": 131.65,
+          "Device Self Duration(us)": 367.52,
+          "Device Total Duration(us)": 367.52
+        },
+        {
+          "name": "aclnnNonzeroV2",
+          "count": 36,
+          "Host Self Duration(us)": 353.31,
+          "Host Total Duration(us)": 353.31,
+          "Device Self Duration(us)": 347.59999999999997,
+          "Device Total Duration(us)": 347.59999999999997
+        },
+        {
+          "name": "aclnnMean",
+          "count": 79,
+          "Host Self Duration(us)": 595.11,
+          "Host Total Duration(us)": 595.11,
+          "Device Self Duration(us)": 309.3,
+          "Device Total Duration(us)": 309.3
+        },
+        {
+          "name": "aclnnRepeatInterleaveIntWithDim",
+          "count": 12,
+          "Host Self Duration(us)": 103.95,
+          "Host Total Duration(us)": 103.95,
+          "Device Self Duration(us)": 282.64,
+          "Device Total Duration(us)": 282.64
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "input_32_decode_kernel_details_csv",
+          "raw_sha256": "18fc3498a0ea82636d0c0f4f3acf1e7a35d2e3345e72dd9fb803c355fd34763a"
+        },
+        {
+          "evidence_id": "input_32_decode_operator_details_csv",
+          "raw_sha256": "1417aed98093d7ce9efbddfadb205c8e72cdf609f899c29895b3e06b00b67276"
+        },
+        {
+          "evidence_id": "input_32_decode_trace_view_json",
+          "raw_sha256": "11ffec8d9c2cfbf50427910b019b0f78476bceb930178b4c748c78627430f9be"
+        },
+        {
+          "evidence_id": "input_32_decode_worker_observation",
+          "raw_sha256": "3ba1f0ae88558e870c9e436c0fcbe646bd52d9c62bdd4edf026a86a82d9bd17c"
+        }
+      ]
+    },
+    {
+      "window": "input_32_extend",
+      "input_tokens": 32,
+      "phase": "extend",
+      "request_output_tokens": 8,
+      "captured_model_forwards": 1,
+      "capture_point": "first prefill forward",
+      "profiled_model_forward_ms": 388.1788400467485,
+      "same_run_six_unprofiled_decode_forwards_ms": [
+        64.32621995918453,
+        58.35024989210069,
+        57.88587010465562,
+        56.658440036699176,
+        57.34758009202778,
+        58.066180208697915
+      ],
+      "whole_trace_complete_event_span_us": 387965.64,
+      "linked_device_events": {
+        "event_count": 8746,
+        "summed_duration_us": 64224.66,
+        "union_busy_us": 64224.66,
+        "span_us": 387743.32,
+        "gap_us": 323518.66,
+        "largest_gap_us": 522.66,
+        "busy_fraction_within_selected_event_span": 0.1656370508201147,
+        "overlap_multiplicity_us": 0.0
+      },
+      "kernel_csv_intervals": {
+        "event_count": 8674,
+        "summed_duration_us": 64174.32,
+        "union_busy_us": 64174.32,
+        "span_us": 387743.32,
+        "gap_us": 323569.0,
+        "largest_gap_us": 522.66,
+        "busy_fraction_within_selected_event_span": 0.16550722266472573,
+        "overlap_multiplicity_us": 0.0
+      },
+      "unmatched_flow_count": 0,
+      "kernel_type_field_quality": "All kernel_details Type and Accelerator Core values are N/A at this profiling level. Use exported kernel/operator names and explicit trace Task Type labels; do not infer AIC metrics.",
+      "top_ten_device_self_operators": [
+        {
+          "name": "aclnnMul",
+          "count": 3176,
+          "Host Self Duration(us)": 13877.18,
+          "Host Total Duration(us)": 13877.18,
+          "Device Self Duration(us)": 21035.26,
+          "Device Total Duration(us)": 21035.26
+        },
+        {
+          "name": "_causal_conv1d_fwd_kernel",
+          "count": 18,
+          "Host Self Duration(us)": 179.45,
+          "Host Total Duration(us)": 179.45,
+          "Device Self Duration(us)": 15059.24,
+          "Device Total Duration(us)": 15059.24
+        },
+        {
+          "name": "aclnnReduceSum",
+          "count": 1188,
+          "Host Self Duration(us)": 5694.0,
+          "Host Total Duration(us)": 5694.0,
+          "Device Self Duration(us)": 9185.22,
+          "Device Total Duration(us)": 9185.22
+        },
+        {
+          "name": "aclnnAdd",
+          "count": 642,
+          "Host Self Duration(us)": 2875.11,
+          "Host Total Duration(us)": 2875.11,
+          "Device Self Duration(us)": 4553.98,
+          "Device Total Duration(us)": 4553.98
+        },
+        {
+          "name": "aclnnInplaceCopy",
+          "count": 1113,
+          "Host Self Duration(us)": 6007.93,
+          "Host Total Duration(us)": 6007.93,
+          "Device Self Duration(us)": 2774.82,
+          "Device Total Duration(us)": 2774.82
+        },
+        {
+          "name": "aclnnIndex",
+          "count": 91,
+          "Host Self Duration(us)": 409.8,
+          "Host Total Duration(us)": 409.8,
+          "Device Self Duration(us)": 2760.16,
+          "Device Total Duration(us)": 2760.16
+        },
+        {
+          "name": "aclnnMatmul",
+          "count": 109,
+          "Host Self Duration(us)": 552.47,
+          "Host Total Duration(us)": 552.47,
+          "Device Self Duration(us)": 1933.78,
+          "Device Total Duration(us)": 1933.78
+        },
+        {
+          "name": "aclnnPowTensorScalar",
+          "count": 79,
+          "Host Self Duration(us)": 390.2,
+          "Host Total Duration(us)": 390.2,
+          "Device Self Duration(us)": 957.1,
+          "Device Total Duration(us)": 957.1
+        },
+        {
+          "name": "aclnnMean",
+          "count": 79,
+          "Host Self Duration(us)": 358.6,
+          "Host Total Duration(us)": 358.6,
+          "Device Self Duration(us)": 797.6,
+          "Device Total Duration(us)": 797.6
+        },
+        {
+          "name": "aclnnMuls",
+          "count": 582,
+          "Host Self Duration(us)": 2394.1,
+          "Host Total Duration(us)": 2394.1,
+          "Device Self Duration(us)": 727.84,
+          "Device Total Duration(us)": 727.84
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "input_32_extend_kernel_details_csv",
+          "raw_sha256": "d76194f69bde42a04449a0128fed83c9d2934410834e8439669257f957b238ae"
+        },
+        {
+          "evidence_id": "input_32_extend_operator_details_csv",
+          "raw_sha256": "c705bd298376d85dfe6e73c5ed2f56a9bb3466d47ae56d4e6b5d1dd8d7cbc74e"
+        },
+        {
+          "evidence_id": "input_32_extend_trace_view_json",
+          "raw_sha256": "05df9b71f270829a73cf1e200a2db564a84bde6cd74474e02ff66f3f99a1bda0"
+        },
+        {
+          "evidence_id": "input_32_extend_worker_observation",
+          "raw_sha256": "4476e964d8df2d89126f0a7bfd90f333aaef8d0107121ab85fadd2096d639cfd"
+        }
+      ]
+    },
+    {
+      "window": "input_512_decode",
+      "input_tokens": 512,
+      "phase": "decode",
+      "request_output_tokens": 8,
+      "captured_model_forwards": 1,
+      "capture_point": "first decode forward",
+      "profiled_model_forward_ms": 115.14294007793069,
+      "same_run_six_unprofiled_decode_forwards_ms": [
+        63.132739858701825,
+        59.61743998341262,
+        58.68250993080437,
+        58.60062991268933,
+        58.763019973412156,
+        59.1795698273927
+      ],
+      "whole_trace_complete_event_span_us": 114597.88,
+      "linked_device_events": {
+        "event_count": 2295,
+        "summed_duration_us": 13242.64,
+        "union_busy_us": 13242.64,
+        "span_us": 114367.22,
+        "gap_us": 101124.58,
+        "largest_gap_us": 622.7,
+        "busy_fraction_within_selected_event_span": 0.11579052109511799,
+        "overlap_multiplicity_us": 0.0
+      },
+      "kernel_csv_intervals": {
+        "event_count": 2229,
+        "summed_duration_us": 13204.32,
+        "union_busy_us": 13204.32,
+        "span_us": 114367.22,
+        "gap_us": 101162.9,
+        "largest_gap_us": 622.7,
+        "busy_fraction_within_selected_event_span": 0.11545546005227722,
+        "overlap_multiplicity_us": 0.0
+      },
+      "unmatched_flow_count": 0,
+      "kernel_type_field_quality": "All kernel_details Type and Accelerator Core values are N/A at this profiling level. Use exported kernel/operator names and explicit trace Task Type labels; do not infer AIC metrics.",
+      "top_ten_device_self_operators": [
+        {
+          "name": "_causal_conv1d_update_kernel",
+          "count": 18,
+          "Host Self Duration(us)": 170.12,
+          "Host Total Duration(us)": 170.12,
+          "Device Self Duration(us)": 2976.3,
+          "Device Total Duration(us)": 2976.3
+        },
+        {
+          "name": "aclnnIndex",
+          "count": 66,
+          "Host Self Duration(us)": 305.72,
+          "Host Total Duration(us)": 305.72,
+          "Device Self Duration(us)": 2455.66,
+          "Device Total Duration(us)": 2455.66
+        },
+        {
+          "name": "aclnnMatmul",
+          "count": 109,
+          "Host Self Duration(us)": 597.13,
+          "Host Total Duration(us)": 597.13,
+          "Device Self Duration(us)": 1732.18,
+          "Device Total Duration(us)": 1732.18
+        },
+        {
+          "name": "aclnnMul",
+          "count": 404,
+          "Host Self Duration(us)": 1807.76,
+          "Host Total Duration(us)": 1807.76,
+          "Device Self Duration(us)": 1672.34,
+          "Device Total Duration(us)": 1672.34
+        },
+        {
+          "name": "aclnnReduceSum",
+          "count": 72,
+          "Host Self Duration(us)": 307.51,
+          "Host Total Duration(us)": 307.51,
+          "Device Self Duration(us)": 692.08,
+          "Device Total Duration(us)": 692.08
+        },
+        {
+          "name": "aclnnInplaceCopy",
+          "count": 489,
+          "Host Self Duration(us)": 2459.66,
+          "Host Total Duration(us)": 2459.66,
+          "Device Self Duration(us)": 490.82,
+          "Device Total Duration(us)": 490.82
+        },
+        {
+          "name": "aclnnInplaceIndexCopy",
+          "count": 18,
+          "Host Self Duration(us)": 91.56,
+          "Host Total Duration(us)": 91.56,
+          "Device Self Duration(us)": 371.68,
+          "Device Total Duration(us)": 371.68
+        },
+        {
+          "name": "aclnnNonzeroV2",
+          "count": 36,
+          "Host Self Duration(us)": 183.0,
+          "Host Total Duration(us)": 183.0,
+          "Device Self Duration(us)": 370.34,
+          "Device Total Duration(us)": 370.34
+        },
+        {
+          "name": "aclnnMean",
+          "count": 79,
+          "Host Self Duration(us)": 359.49,
+          "Host Total Duration(us)": 359.49,
+          "Device Self Duration(us)": 307.26,
+          "Device Total Duration(us)": 307.26
+        },
+        {
+          "name": "aclnnRepeatInterleaveIntWithDim",
+          "count": 12,
+          "Host Self Duration(us)": 57.2,
+          "Host Total Duration(us)": 57.2,
+          "Device Self Duration(us)": 265.92,
+          "Device Total Duration(us)": 265.92
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "input_512_decode_kernel_details_csv",
+          "raw_sha256": "eebf083d357e6348cfdbea6142568707aabc5b41594b0b54ba7af505c89f819e"
+        },
+        {
+          "evidence_id": "input_512_decode_operator_details_csv",
+          "raw_sha256": "0e5c873552c1c6a9809a9a7a6d11b0688471028468eaa28553941f945f384203"
+        },
+        {
+          "evidence_id": "input_512_decode_trace_view_json",
+          "raw_sha256": "d95288b8eca3ad726e337d49f898592cf77c4e92edd2ffb550d6a0acfe47aebb"
+        },
+        {
+          "evidence_id": "input_512_decode_worker_observation",
+          "raw_sha256": "094ef8c17a683929107264f999aced9a50dde85f0c899b40443f9cda110a7edd"
+        }
+      ]
+    },
+    {
+      "window": "input_512_extend",
+      "input_tokens": 512,
+      "phase": "extend",
+      "request_output_tokens": 8,
+      "captured_model_forwards": 1,
+      "capture_point": "first prefill forward",
+      "profiled_model_forward_ms": 4259.673269931227,
+      "same_run_six_unprofiled_decode_forwards_ms": [
+        63.132739858701825,
+        59.61743998341262,
+        58.68250993080437,
+        58.60062991268933,
+        58.763019973412156,
+        59.1795698273927
+      ],
+      "whole_trace_complete_event_span_us": 4259496.295,
+      "linked_device_events": {
+        "event_count": 103780,
+        "summed_duration_us": 785461.22,
+        "union_busy_us": 785461.22,
+        "span_us": 4259274.5,
+        "gap_us": 3473813.28,
+        "largest_gap_us": 978.1,
+        "busy_fraction_within_selected_event_span": 0.18441197438671775,
+        "overlap_multiplicity_us": 0.0
+      },
+      "kernel_csv_intervals": {
+        "event_count": 103780,
+        "summed_duration_us": 785461.22,
+        "union_busy_us": 785461.22,
+        "span_us": 4259274.5,
+        "gap_us": 3473813.28,
+        "largest_gap_us": 978.1,
+        "busy_fraction_within_selected_event_span": 0.18441197438671775,
+        "overlap_multiplicity_us": 0.0
+      },
+      "unmatched_flow_count": 0,
+      "kernel_type_field_quality": "All kernel_details Type and Accelerator Core values are N/A at this profiling level. Use exported kernel/operator names and explicit trace Task Type labels; do not infer AIC metrics.",
+      "top_ten_device_self_operators": [
+        {
+          "name": "aclnnMul",
+          "count": 46376,
+          "Host Self Duration(us)": 177934.68,
+          "Host Total Duration(us)": 177934.68,
+          "Device Self Duration(us)": 295054.94,
+          "Device Total Duration(us)": 295054.94
+        },
+        {
+          "name": "_causal_conv1d_fwd_kernel",
+          "count": 18,
+          "Host Self Duration(us)": 161.46,
+          "Host Total Duration(us)": 161.46,
+          "Device Self Duration(us)": 232115.96,
+          "Device Total Duration(us)": 232115.96
+        },
+        {
+          "name": "aclnnReduceSum",
+          "count": 18468,
+          "Host Self Duration(us)": 77401.04,
+          "Host Total Duration(us)": 77401.04,
+          "Device Self Duration(us)": 136559.88,
+          "Device Total Duration(us)": 136559.88
+        },
+        {
+          "name": "aclnnAdd",
+          "count": 9282,
+          "Host Self Duration(us)": 36483.98,
+          "Host Total Duration(us)": 36483.98,
+          "Device Self Duration(us)": 68141.78,
+          "Device Total Duration(us)": 68141.78
+        },
+        {
+          "name": "aclnnInplaceCopy",
+          "count": 9753,
+          "Host Self Duration(us)": 47275.09,
+          "Host Total Duration(us)": 47275.09,
+          "Device Self Duration(us)": 13542.96,
+          "Device Total Duration(us)": 13542.96
+        },
+        {
+          "name": "aclnnMuls",
+          "count": 9222,
+          "Host Self Duration(us)": 34044.16,
+          "Host Total Duration(us)": 34044.16,
+          "Device Self Duration(us)": 11534.66,
+          "Device Total Duration(us)": 11534.66
+        },
+        {
+          "name": "aclnnSub",
+          "count": 9216,
+          "Host Self Duration(us)": 44871.82,
+          "Host Total Duration(us)": 44871.82,
+          "Device Self Duration(us)": 11290.26,
+          "Device Total Duration(us)": 11290.26
+        },
+        {
+          "name": "aclnnIndex",
+          "count": 91,
+          "Host Self Duration(us)": 369.72,
+          "Host Total Duration(us)": 369.72,
+          "Device Self Duration(us)": 4298.38,
+          "Device Total Duration(us)": 4298.38
+        },
+        {
+          "name": "aclnnMatmul",
+          "count": 109,
+          "Host Self Duration(us)": 549.94,
+          "Host Total Duration(us)": 549.94,
+          "Device Self Duration(us)": 3740.58,
+          "Device Total Duration(us)": 3740.58
+        },
+        {
+          "name": "fused_gdn_gating_kernel",
+          "count": 18,
+          "Host Self Duration(us)": 131.74,
+          "Host Total Duration(us)": 131.74,
+          "Device Self Duration(us)": 1383.56,
+          "Device Total Duration(us)": 1383.56
+        }
+      ],
+      "sources": [
+        {
+          "evidence_id": "input_512_extend_kernel_details_csv",
+          "raw_sha256": "1305841ba0935382cd092af5202fb913b475e222ce14fff089949ae92cd748c2"
+        },
+        {
+          "evidence_id": "input_512_extend_operator_details_csv",
+          "raw_sha256": "089a2ecd23c147dc162037a5531b594d0d33c50c1de242309c480d27b8f7507d"
+        },
+        {
+          "evidence_id": "input_512_extend_trace_view_json",
+          "raw_sha256": "179e0cb84df73b0c7a46a16dbc7c37bf254a66d88d57060f87fee1f22cfb2c6b"
+        },
+        {
+          "evidence_id": "input_512_extend_worker_observation",
+          "raw_sha256": "3779773874f1c1582f84212971582a13f70089b6f5700340506c9c1166d7f35d"
+        }
+      ]
+    }
+  ],
+  "tables": [
+    "baseline_profile_windows.csv",
+    "baseline_profile_operators.csv",
+    "baseline_profile_task_types.csv",
+    "baseline_profile_kernel_names.csv"
+  ]
+}

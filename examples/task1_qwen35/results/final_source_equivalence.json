@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "scope": "Required pre-commit formatting after measured revision; no equations, parameters, control flow or thresholds changed",
+  "identity_note": "The measured deployment was a source archive based on baseline commit 070dab022dc9879474b37fba2d95ab5d12f0534e. Run-specific source manifests identify actual deployed bytes. These mappings record reviewed formatting changes afterward, not a final Git commit.",
+  "files": [
+    {
+      "path": "tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/ops/mha.py",
+      "tested_sha256": "880080384f3f6bc6a692f43b62c1d0c09edc457621ddf2c7f0faf5eda65ef3bb",
+      "formatted_sha256": "dc70b8153723b9cd4dee6cc5d89af7f0d38b8d8da28f3b07441bb99868fb49a0",
+      "equivalence": "Python AST identical"
+    },
+    {
+      "path": "examples/task1_qwen35/compare_hf.py",
+      "tested_sha256": "97297226b21042ff8b1f7073249ccaf6fa98c87f6dbfb260ac44750740b241af",
+      "formatted_sha256": "7e5f39f0ab2800ccdabfe95d227f07c6d12a82beaf08639aa37b9b12fdabeafa",
+      "equivalence": "Python AST identical"
+    },
+    {
+      "path": "examples/task1_qwen35/diagnose_layers.py",
+      "tested_sha256": "d0e262ddab7624d40a3d8a0e26086144cb1f7f2557d605e58ed37767c22288d8",
+      "formatted_sha256": "1060a60a277aa1fcdce6cd5e6266d18d1d87d0b3a29161475f43f59de99092f6",
+      "equivalence": "Only adjacent import order changed; initialization reviewed independent; all other AST identical"
+    },
+    {
+      "path": "examples/task1_qwen35/reference_cache.py",
+      "tested_sha256": "b002b19f97b3170873c0a3630024c1b9ce6aa9d06fd3121ce95e0be648f840fd",
+      "formatted_sha256": "68e25def13674cef7792d329d31442007c81586e457b7fb226f93a15dc67f250",
+      "equivalence": "Python AST identical"
+    },
+    {
+      "path": "examples/task1_qwen35/test_reference_cache.py",
+      "tested_sha256": "404d6e65472e6b2cc43c99b93b762c58a00dffed4d6305ad79414ff9c4455636",
+      "formatted_sha256": "c8d1a38cb5f7d02dcb9cd29f69c5f6a9df6dceea2e16ad304ac5df9ee4dba594",
+      "equivalence": "Python AST identical"
+    }
+  ],
+  "formatted_files_sha256_rechecked": true,
+  "source_review_record": {
+    "evidence_id": "production_format_equivalence",
+    "raw_sha256": "ab6f0a081f354ed3beda226bd24f3fa5d2128027c5d05c88965d7ebab1c058b4"
+  },
+  "privacy_note": "Explicit allowlist export; original files are linked by logical evidence ID and SHA256. Private paths, hostnames, user names, process IDs and device process listings are omitted.",
+  "subsequent_chat_input_fix": {
+    "scope": "Explicit list[int] chat-template return only; fixed-token benchmark and correctness paths unchanged. Validated by 33 combined CPU tests and four EOS-terminated Engine chat examples.",
+    "files": {
+      "examples/task1_qwen35/common.py": "5097ce927cf21f199a52b36014a940789979d501e9da4f8ccfe52d066d842ba1",
+      "examples/task1_qwen35/run_engine.py": "ec0435b1dddb9872f3a7dfdd5ca832082e2760dfdc9970fcf94eff58be42d166",
+      "examples/task1_qwen35/test_chat_input.py": "803915d50603798b5edfa40c06d0b0c28d5bd14ec6617badb6f47350b1321bcc"
+    }
+  }
+}

@@ -106,6 +106,7 @@ def test_v9_timed_partition_replays_changed_inputs() -> None:
             HAS_BIAS=False,
             KERNEL_WIDTH=width,
             SILU_ACTIVATION=True,
+            ROUND_BEFORE_ACTIVATION=False,
             HAS_INITIAL_STATES=True,
             HAS_CACHE=True,
             IS_CONTINUOUS_BATCHING=True,

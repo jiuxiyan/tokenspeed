@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "completed": true,
+  "profile_enabled": false,
+  "code_identity": {
+    "baseline_commit": "070dab022dc9879474b37fba2d95ab5d12f0534e",
+    "source_manifest_sha256": "30e25f78dd735593d8dde8cae0df67bae0e258ae529e4c17a87ea6e55ca7ab77"
+  },
+  "metric_scope": "Actual worker ModelRunner.forward; NPU synchronized before and after each forward; allocator peak counters reset for each forward. Resident weights and cache are included. Scheduler, sampling and model-load peaks are excluded. Diagnostic synchronization can alter overlap; these times are not frontend TTFT/TPOT.",
+  "memory_units": "Allocator sizes are bytes. GiB = bytes / 2^30. npu-smi device-wide snapshots retain the tool reported MB unit without assuming decimal vs binary conversion.",
+  "groups": [
+    {
+      "input_tokens": 32,
+      "output_tokens": 128,
+      "phase": "extend",
+      "forwards": 1,
+      "model_forward_ms_median": 178.92561992630363,
+      "model_forward_ms_min": 178.92561992630363,
+      "model_forward_ms_max": 178.92561992630363,
+      "peak_allocated_bytes": 2081646592,
+      "peak_reserved_bytes": 2432696320,
+      "input_sha256": "cc87b4304f208775bc0e24f25aba2e0c8a9964e6f551ca31e9dfaa9e2463f4d6",
+      "source_fixture": {
+        "evidence_id": "final_diagnostic_length_32_fixture",
+        "raw_sha256": "80dc84c03adac45d3a0c76f6fb0ed1828aec82c102659bc764f34591613af186"
+      }
+    },
+    {
+      "input_tokens": 32,
+      "output_tokens": 128,
+      "phase": "decode",
+      "forwards": 127,
+      "model_forward_ms_median": 62.752339988946915,
+      "model_forward_ms_min": 58.06626984849572,
+      "model_forward_ms_max": 65.31254993751645,
+      "peak_allocated_bytes": 2060917248,
+      "peak_reserved_bytes": 2432696320,
+      "input_sha256": "cc87b4304f208775bc0e24f25aba2e0c8a9964e6f551ca31e9dfaa9e2463f4d6",
+      "source_fixture": {
+        "evidence_id": "final_diagnostic_length_32_fixture",
+        "raw_sha256": "80dc84c03adac45d3a0c76f6fb0ed1828aec82c102659bc764f34591613af186"
+      }
+    },
+    {
+      "input_tokens": 512,
+      "output_tokens": 128,
+      "phase": "extend",
+      "forwards": 1,
+      "model_forward_ms_median": 430.38814002647996,
+      "model_forward_ms_min": 430.38814002647996,
+      "model_forward_ms_max": 430.38814002647996,
+      "peak_allocated_bytes": 2145646080,
+      "peak_reserved_bytes": 2432696320,
+      "input_sha256": "4b34f0f0fe8ef308fa47e038cf9db8fffcdbe9b91429d6f5b5398d7b8f94305a",
+      "source_fixture": {
+        "evidence_id": "final_diagnostic_length_512_fixture",
+        "raw_sha256": "6188544ef53247172ab72c22f189779ece257d5cde2af7127e51b6fc2b90551f"
+      }
+    },
+    {
+      "input_tokens": 512,
+      "output_tokens": 128,
+      "phase": "decode",
+      "forwards": 127,
+      "model_forward_ms_median": 61.02457991801202,
+      "model_forward_ms_min": 60.17229985445738,
+      "model_forward_ms_max": 62.19265004619956,
+      "peak_allocated_bytes": 2063873536,
+      "peak_reserved_bytes": 2432696320,
+      "input_sha256": "4b34f0f0fe8ef308fa47e038cf9db8fffcdbe9b91429d6f5b5398d7b8f94305a",
+      "source_fixture": {
+        "evidence_id": "final_diagnostic_length_512_fixture",
+        "raw_sha256": "6188544ef53247172ab72c22f189779ece257d5cde2af7127e51b6fc2b90551f"
+      }
+    }
+  ],
+  "worker_samples_file": "final_diagnostic_steps.csv",
+  "device_hbm_snapshots": [
+    {
+      "measurement_point": "npu_before",
+      "logical_device": 0,
+      "hbm_used_reported_MB": 2933,
+      "hbm_capacity_reported_MB": 65536,
+      "is_peak": false
+    },
+    {
+      "measurement_point": "npu_after_load",
+      "logical_device": 0,
+      "hbm_used_reported_MB": 5138,
+      "hbm_capacity_reported_MB": 65536,
+      "is_peak": false
+    },
+    {
+      "measurement_point": "npu_before_shutdown",
+      "logical_device": 0,
+      "hbm_used_reported_MB": 5383,
+      "hbm_capacity_reported_MB": 65536,
+      "is_peak": false
+    }
+  ],
+  "device_snapshot_scope": "Only the selected chip is retained. These are whole-device point-in-time snapshots, not per-process attribution, not a sampled maximum, and not a bandwidth measurement. Physical chip IDs, bus addresses, process rows and all other chips are omitted.",
+  "source_manifest": {
+    "evidence_id": "final_diagnostic_manifest",
+    "raw_sha256": "b542754d3e8571703c3dfc5f3369e3988239a255157f0f73cdbe042569c2ac93"
+  },
+  "privacy_note": "Explicit allowlist export; original files are linked by logical evidence ID and SHA256. Private paths, hostnames, user names, process IDs and device process listings are omitted."
+}

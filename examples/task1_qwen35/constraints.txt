@@ -1,0 +1,9 @@
+# Compatibility constraints for the fixed Task 1 fork, not an install command.
+# Always pass -c to subsequent pip installs inside the private virtualenv.
+# The +cpu torch wheel is intentional: torch_npu supplies the NPU device backend.
+torch==2.9.0+cpu
+torch-npu==2.9.0.post2
+transformers==5.12.0
+triton-ascend==3.2.1
+tokenspeed-scheduler==0.1.40
+apache-tvm-ffi==0.1.13.post3

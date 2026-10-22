@@ -41,6 +41,9 @@ from tokenspeed_kernel.ops.communication.trtllm import (
 )
 from tokenspeed_kernel.ops.layernorm import (
     add_rmsnorm,
+)
+from tokenspeed_kernel.ops.layernorm import gemma_rmsnorm as platform_gemma_rmsnorm
+from tokenspeed_kernel.ops.layernorm import (
     nvfp4_copy_supported,
     rmsnorm,
 )
@@ -274,6 +277,10 @@ class GemmaRMSNorm(torch.nn.Module):
             else:
                 return x
 
+        if _platform.is_npu:
+            return platform_gemma_rmsnorm(
+                x, self.weight, self.variance_epsilon, residual=residual
+            )
         if _is_amd:
             if x.shape[0] == 0:
                 if residual is not None:
@@ -353,6 +360,11 @@ class GemmaRMSNorm(torch.nn.Module):
         tuple[torch.Tensor, torch.Tensor] | None,
         torch.Tensor,
     ]:
+        if _platform.is_npu:
+            if fp8_scale is not None or fp4_scale is not None:
+                raise ValueError("Ascend GemmaRMSNorm requires unquantized output")
+            x, residual = self(x, residual)
+            return x, None, None, residual
         if _is_amd:
             x, residual = self(x, residual)
             return x, None, None, residual

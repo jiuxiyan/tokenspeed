@@ -37,7 +37,36 @@ def apply_rope(
     q_rope_out: torch.Tensor | None = None,
     k_rope_out: torch.Tensor | None = None,
 ) -> None:
-    """Apply RoPE to Q and K, writing into outputs or the inputs in place."""
+    """Apply RoPE to Q and K, writing into outputs or the inputs in place.
+
+    Qwen3.5's BF16 head256/rotary64 NeoX geometry preserves the two BF16
+    products and their BF16 sum, matching the model's explicit HF boundary.
+    Other geometries retain the native fused operator.
+    """
+    if (
+        head_size == 256
+        and cos_sin_cache.shape[-1] == 64
+        and q.dtype == k.dtype == torch.bfloat16
+        and is_neox
+    ):
+        if positions.numel() == 0:
+            return
+        table = cos_sin_cache[positions.long()].to(q.dtype)
+        cos_half, sin_half = table.chunk(2, dim=-1)
+        cosine = torch.cat((cos_half, cos_half), dim=-1).unsqueeze(1)
+        sine = torch.cat((sin_half, sin_half), dim=-1).unsqueeze(1)
+
+        def rotate(values: torch.Tensor) -> torch.Tensor:
+            heads = values.reshape(positions.numel(), -1, head_size)
+            rotary = heads[..., :64]
+            rotate_half = torch.cat((-rotary[..., 32:], rotary[..., :32]), dim=-1)
+            result = rotary * cosine + rotate_half * sine
+            return torch.cat((result, heads[..., 64:]), dim=-1).reshape(values.shape)
+
+        q_out, k_out = rotate(q), rotate(k)
+        (q if q_rope_out is None else q_rope_out).copy_(q_out)
+        (k if k_rope_out is None else k_rope_out).copy_(k_out)
+        return
     q_out, k_out = torch_npu.npu_mrope(
         positions,
         q,

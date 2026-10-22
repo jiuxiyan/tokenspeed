@@ -124,9 +124,41 @@ def qk_rmsnorm(
     weight_offset: float,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Apply the platform per-head Q/K RMSNorm implementation; heads scale by
-    ``weight_offset + weight`` (1.0 for Gemma-style weights), formed in fp32
-    except on Ascend, which rounds it to the weight dtype."""
+    ``weight_offset + weight`` (1.0 for Gemma-style weights), formed in fp32."""
     return _qk_rmsnorm(q, k, q_weight, k_weight, eps, weight_offset=weight_offset)
+
+
+def gemma_rmsnorm(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    eps: float,
+    residual: torch.Tensor | None = None,
+) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+    """RMSNorm with FP32 ``1 + weight`` and an optional residual update.
+
+    Ascend and AMD round the residual addition to x's dtype before computing
+    the norm, matching an unfused layer boundary. NVIDIA retains its fused
+    implementation, which overwrites x and residual when residual is supplied.
+    """
+    if _platform.is_npu:
+        from tokenspeed_kernel.ops.layernorm.ascend import gemma_rmsnorm as impl
+
+        return impl(x, weight, eps, residual=residual)
+    if _platform.is_amd:
+        values = x if residual is None else x + residual
+        values_fp32 = values.float()
+        scale = torch.rsqrt(values_fp32.square().mean(-1, keepdim=True) + eps)
+        result = (values_fp32 * scale * (1.0 + weight.float())).to(x.dtype)
+        return result if residual is None else (result, values)
+    from tokenspeed_kernel.ops.layernorm.flashinfer import (
+        gemma_fused_add_rmsnorm,
+    )
+    from tokenspeed_kernel.ops.layernorm.flashinfer import gemma_rmsnorm as impl
+
+    if residual is not None:
+        gemma_fused_add_rmsnorm(x, residual, weight, eps)
+        return x, residual
+    return impl(x, weight, eps)
 
 
 def grouped_gemma_rmsnorm(
@@ -233,6 +265,25 @@ def gated_residual_combine_norm(
     )
 
 
+def qwen35_gated_rmsnorm(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    z: torch.Tensor,
+    *,
+    eps: float,
+    group_size: int,
+) -> torch.Tensor:
+    """Ascend Qwen3.5 HF norm, rounding norm and affine before FP32 SiLU.
+
+    This explicit model boundary leaves the generic fused contract unchanged.
+    """
+    if not _platform.is_npu:
+        raise NotImplementedError("Qwen3.5 staged gated RMSNorm is an Ascend entry")
+    from tokenspeed_kernel.ops.layernorm.ascend import qwen35_gated_rmsnorm as impl
+
+    return impl(x, weight, z, eps=eps, group_size=group_size)
+
+
 def gated_rmsnorm(
     x: torch.Tensor,
     weight: torch.Tensor,
@@ -269,6 +320,8 @@ def gated_rmsnorm(
         The normalized tensor, shaped like ``x``.
     """
     group = x.shape[-1] if group_size is None else int(group_size)
+    if _platform.is_npu and fp8_scale is not None:
+        raise ValueError("Ascend gated RMSNorm does not support FP8 output")
     kernel = select_kernel(
         "layernorm",
         "gated_rmsnorm",
@@ -289,10 +342,12 @@ def gated_rmsnorm(
 
 
 __all__ = [
+    "qwen35_gated_rmsnorm",
     "add_rmsnorm",
     "affine_rmsnorm",
     "gated_residual_combine_norm",
     "gated_rmsnorm",
+    "gemma_rmsnorm",
     "grouped_gemma_rmsnorm",
     "grouped_rmsnorm",
     "nvfp4_copy_supported",

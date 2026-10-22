@@ -1,0 +1,55 @@
+{
+  "package": "torch_npu",
+  "version": "2.9.0.post2",
+  "inspection_date": "2026-10-22",
+  "inspection_method": "Read installed source files and METADATA over SSH; never imported torch_npu or initialized NPU.",
+  "source_root": "torch_npu/profiler/analysis/",
+  "source_sha256": {
+    "prof_common_func/_csv_headers.py": "fa739b08175129cd049cd68b50592da4b272cfe2645d8969e862828ccf615e7f",
+    "prof_view/_operator_view_parser.py": "04f0e547be4bba099dc5ab150bf5332ac6e971e5e8ed03611823bd49c1483454",
+    "prof_view/_kernel_view_parser.py": "1fbd9d5600123c4d76fcab5e8ce470293c7208ee2ff488223cb09ea8323ea330",
+    "prof_view/_trace_view_parser.py": "548b799b5be9f4083d3fca262a93dad281ab433831a042bace13fb4879865f74",
+    "prof_bean/_event_bean.py": "5c9a2b58fe3dbbad81c405298420c5c094b002bc855b58f13be7f51c326ecaed",
+    "prof_parse/_cann_file_parser.py": "f59aee4e917c39209d7514c22ea500aafb60aa333681bcdc1d95ccd43a6c7463"
+  },
+  "kernel_csv": {
+    "file": "kernel_details.csv",
+    "base_headers": [
+      "Device_id",
+      "Name",
+      "Type",
+      "Accelerator Core",
+      "Start Time(us)",
+      "Duration(us)",
+      "Wait Time(us)",
+      "Block Num"
+    ],
+    "optional_prefix": "Step Id",
+    "other_columns": "Exporter may preserve additional CANN columns; analyzer selects exact required fields by name."
+  },
+  "operator_csv": {
+    "file": "operator_details.csv",
+    "headers": [
+      "Name",
+      "Input Shapes",
+      "Call Stack",
+      "Host Self Duration(us)",
+      "Host Total Duration(us)",
+      "Device Self Duration(us)",
+      "Device Total Duration(us)",
+      "Device Self Duration With AICore(us)",
+      "Device Total Duration With AICore(us)"
+    ],
+    "device_duration_semantics": "Self/Total sum correlated kernel durations; Total includes descendant operators. They are not timeline unions."
+  },
+  "trace_json": {
+    "file": "trace_view.json",
+    "root": "list of Chrome trace event objects",
+    "complete_phase": "X",
+    "timestamp_unit": "us",
+    "duration_unit": "us",
+    "device_link_rule": "Paired cat=HostToDevice, ph=s/f flows; match ph=f endpoint to X by pid, tid, ts, following CANNFileParser.combine_acl_to_npu.",
+    "coverage_limit": "Only uniquely matched events are classified as device work automatically. No assumptions about undocumented process names/categories."
+  },
+  "status": "Parser preparation from installed source schema; fixtures are synthetic and do not constitute measured profiler results."
+}

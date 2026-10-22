@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import torch
+from tokenspeed_kernel.ops.attention.gdn import gdn_gating
 from tokenspeed_kernel.platform import pdl_enabled
 
 from tokenspeed.runtime.utils.triton import tl, triton
@@ -69,6 +70,8 @@ def fused_gdn_gating(
     beta: float = 1.0,
     threshold: float = 20.0,
 ) -> torch.Tensor:
+    if a.device.type == "npu":
+        return gdn_gating(A_log, a, dt_bias, beta=beta, threshold=threshold)
     enable_pdl = pdl_enabled()
     batch, num_heads = a.shape
     seq_len = 1

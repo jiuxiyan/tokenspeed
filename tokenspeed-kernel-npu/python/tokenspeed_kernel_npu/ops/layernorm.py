@@ -26,6 +26,106 @@ import torch
 import torch_npu
 
 
+def gemma_rmsnorm(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    eps: float,
+    residual: torch.Tensor | None = None,
+) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+    """Normalize with FP32 ``1 + weight`` and update an optional residual.
+
+    The residual sum is rounded to the activation dtype before normalization,
+    matching the unfused model boundary. All arithmetic stays on x's device.
+    """
+    if x.numel() == 0:
+        result = torch.empty_like(x)
+        return result if residual is None else (result, residual)
+    if residual is not None:
+        residual.copy_(x + residual)
+        values = residual.float()
+    else:
+        values = x.float()
+    scale = torch.rsqrt(values.square().mean(dim=-1, keepdim=True) + eps)
+    result = (values * scale * (1.0 + weight.float())).to(x.dtype)
+    return result if residual is None else (result, residual)
+
+
+def gated_rmsnorm(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    z: torch.Tensor | None,
+    eps: float,
+    group_size: int,
+    norm_before_gate: bool,
+    sigmoid_gate: bool,
+    fp8_scale: torch.Tensor | None,
+    weights_independent: bool,
+) -> torch.Tensor:
+    """FP32 grouped norm and gate, rounded once to the activation dtype.
+
+    Weight may span the whole row or be shared across groups. NPU operations
+    use the current stream; ``weights_independent`` only affects CUDA PDL.
+    """
+    del weights_independent
+    if fp8_scale is not None:
+        raise ValueError("Ascend gated RMSNorm does not support FP8 output")
+    width = x.shape[-1]
+    if group_size <= 0 or width % group_size:
+        raise ValueError("input width must be divisible by a positive group_size")
+    if weight.shape not in ((width,), (group_size,)):
+        raise ValueError("weight must span the row or one normalization group")
+    if z is not None and z.shape != x.shape:
+        raise ValueError("gate shape must match the input")
+    if x.numel() == 0:
+        return torch.empty_like(x)
+    grouped_shape = x.shape[:-1] + (width // group_size, group_size)
+    values = x.float().reshape(grouped_shape)
+    gate = None
+    if z is not None:
+        gate_input = z.float().reshape(grouped_shape)
+        gate = gate_input.sigmoid()
+        if not sigmoid_gate:
+            gate = gate_input * gate
+        if not norm_before_gate:
+            values = values * gate
+    scale = torch.rsqrt(values.square().mean(dim=-1, keepdim=True) + eps)
+    result = (values * scale).reshape(x.shape)
+    affine = weight.float()
+    if weight.numel() != width:
+        affine = affine.repeat(width // group_size)
+    result = result * affine
+    if gate is not None and norm_before_gate:
+        result = result * gate.reshape(x.shape)
+    return result.to(x.dtype)
+
+
+def qwen35_gated_rmsnorm(
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    z: torch.Tensor,
+    *,
+    eps: float,
+    group_size: int,
+) -> torch.Tensor:
+    """Qwen3.5 HF norm with activation-dtype norm and affine boundaries.
+
+    The normalized input rounds before multiplying the weight, and that
+    product rounds before the FP32 SiLU gate. These two boundaries differ
+    from the generic fused gated RMSNorm contract.
+    """
+    if group_size <= 0 or x.shape[-1] % group_size:
+        raise ValueError("input width must be divisible by a positive group_size")
+    if weight.shape != (group_size,) or z.shape != x.shape:
+        raise ValueError("Qwen3.5 requires per-head weights and a matching gate")
+    if x.numel() == 0:
+        return torch.empty_like(x)
+    grouped = x.float().reshape(*x.shape[:-1], -1, group_size)
+    normalized = grouped * torch.rsqrt(grouped.square().mean(-1, keepdim=True) + eps)
+    affine = normalized.to(x.dtype) * weight
+    gated = affine.reshape(x.shape) * torch.nn.functional.silu(z.float())
+    return gated.to(x.dtype)
+
+
 def rmsnorm(
     x: torch.Tensor,
     weight: torch.Tensor,
@@ -76,4 +176,10 @@ def qk_rmsnorm(
     return q_out, k_out
 
 
-__all__ = ["qk_rmsnorm", "rmsnorm"]
+__all__ = [
+    "gated_rmsnorm",
+    "gemma_rmsnorm",
+    "qk_rmsnorm",
+    "qwen35_gated_rmsnorm",
+    "rmsnorm",
+]

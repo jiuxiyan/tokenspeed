@@ -27,7 +27,8 @@ from collections.abc import Iterable
 
 import torch
 import torch.nn as nn
-from tokenspeed_kernel.ops.activation.triton import sigmoid_mul
+from tokenspeed_kernel.ops.activation import qwen35_sigmoid_mul, sigmoid_mul
+from tokenspeed_kernel.ops.layernorm import qwen35_gated_rmsnorm
 from tokenspeed_kernel.platform import current_platform
 
 from tokenspeed.runtime.configs.qwen3_5_config import (
@@ -599,7 +600,16 @@ class Qwen3_5GatedDeltaNet(nn.Module):
         # Each head normalized on its own, rows kept whole (z may be a strided view).
         core_attn_out = core_attn_out.reshape(seq_len, -1)
         z = z.reshape(seq_len, -1)
-        core_attn_out = self.norm(core_attn_out, z)
+        if current_platform().is_npu:
+            core_attn_out = qwen35_gated_rmsnorm(
+                core_attn_out,
+                self.norm.weight,
+                z,
+                eps=self.norm.eps,
+                group_size=self.head_v_dim,
+            )
+        else:
+            core_attn_out = self.norm(core_attn_out, z)
         output, _ = self.out_proj(core_attn_out)
         return output
 
@@ -915,7 +925,10 @@ class Qwen3_5AttentionDecoderLayer(nn.Module):
         """Attention with the optional output gate; draft subclasses override."""
         attn_output = self.attn(q, k, v, positions, ctx, **kwargs)
         if gate is not None:
-            sigmoid_mul(attn_output, gate)
+            if current_platform().is_npu:
+                qwen35_sigmoid_mul(attn_output, gate)
+            else:
+                sigmoid_mul(attn_output, gate)
         return attn_output
 
     def self_attention(
@@ -1041,7 +1054,8 @@ class Qwen3_5ForCausalLM(nn.Module):
         # signaling; at decode the join alone idles the GPU for about 15 us
         # per MoE layer, longer than the shared expert takes, so it runs
         # inline there.
-        alt_stream = None if current_platform().is_amd else torch.cuda.Stream()
+        platform = current_platform()
+        alt_stream = None if platform.is_amd or platform.is_npu else torch.cuda.Stream()
 
         # Embedding layer
         self.embed_tokens = VocabParallelEmbedding(

@@ -92,6 +92,27 @@ LSE_LN = math.log2(math.e)
 # ===-----------------------------------------------------------------------===#
 
 
+def gdn_gating(
+    A_log: torch.Tensor,
+    a: torch.Tensor,
+    dt_bias: torch.Tensor,
+    *,
+    beta: float,
+    threshold: float,
+) -> torch.Tensor:
+    """Compute Ascend FP32 log decay ``-exp(A_log) * softplus(a + dt_bias)``.
+
+    ``a`` has a final head dimension; ``A_log`` and ``dt_bias`` are head
+    vectors. ``beta`` and ``threshold`` explicitly select softplus behavior.
+    Returns a fresh FP32 tensor with the shape of ``a`` on the same NPU.
+    """
+    if not current_platform().is_npu:
+        raise NotImplementedError("staged GDN gating is an Ascend kernel")
+    from tokenspeed_kernel.ops.attention.gdn.ascend import gdn_gating as impl
+
+    return impl(A_log, a, dt_bias, beta=beta, threshold=threshold)
+
+
 class GdnCheckpointLayout(str, Enum):
     """Backend-native checkpoint layout returned by GDN chunk prefill."""
 
@@ -900,6 +921,7 @@ def gdn_replay_commit_supported(
 
 # Backend registration (side-effect imports)
 # isort: off
+import tokenspeed_kernel.ops.attention.gdn.ascend  # noqa: E402,F401
 import tokenspeed_kernel.ops.attention.gdn.flashinfer  # noqa: E402,F401
 import tokenspeed_kernel.ops.attention.gdn.gluon  # noqa: E402,F401
 import tokenspeed_kernel.ops.attention.gdn.triton  # noqa: E402,F401
@@ -917,6 +939,7 @@ __all__ = [
     "gdn_decode_step",
     "gdn_decode_mtp",
     "gdn_decode_supports",
+    "gdn_gating",
     "gdn_replay_commit",
     "gdn_replay_commit_supported",
     "gdn_tree_verify_needs_node_states",

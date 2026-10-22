@@ -99,8 +99,9 @@ per activation).
 
 In the fused solutions the steps compute in fp32. Every output (query, key,
 value, and cache row) rounds once. A norm's weight arrives raw with an fp32
-offset, so Gemma's `1 + w` never rounds to the activation dtype, except under
-Ascend's norm, which forms it in the weight dtype as before. M-RoPE selects
+offset, so Gemma's `1 + w` never rounds to the activation dtype. Ascend's
+composite Gemma Q/K norm also forms the offset, statistic and affine product
+in fp32, rounding once when it returns the normalized heads. M-RoPE selects
 each rotation pair's position row and then applies the ordinary rotation, so
 text tokens get exactly the bytes of plain RoPE.
 
@@ -109,7 +110,10 @@ models did before the prologue existed. It is the portable path: every GQA
 layer on Ascend, and elsewhere the shapes the fused kernels do not cover, MXFP8
 caches among them. On AMD and NVIDIA, without a norm and with a native cache of
 the activation dtype, it too rounds once. Ascend's rotation rounds the cos/sin
-table to the activation dtype first. A backend that attends the returned rows
+table to the activation dtype first. Its BF16 NeoX head-256, rotary-64 geometry
+also rounds both rotation products before their sum, preserving Qwen3.5's
+explicit BF16 boundaries. Other Ascend geometries retain native fused rotation.
+A backend that attends the returned rows
 instead of the cache (a prefill with no cached prefix) and casts them to an FP8
 cache's dtype itself rounds them twice, as it did before, while the cache holds
 them rounded once.

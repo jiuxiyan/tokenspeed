@@ -1,0 +1,1812 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "Test results parsed from original completed-run logs; no tests were rerun for this export.",
+  "summary": {
+    "tests": 284,
+    "passed": 284,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "npu_module_tests": 251,
+    "cpu_helper_tests": 33
+  },
+  "suites": [
+    {
+      "suite": "NPU module regression",
+      "execution_device": "npu",
+      "tests": 251,
+      "passed": 251,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_duration_seconds": 16.219,
+      "console_duration_seconds": 16.22,
+      "reported_warnings": 29,
+      "sources": [
+        {
+          "evidence_id": "final_npu_tests_xml",
+          "raw_sha256": "548c5d838d2fad491ef48b65b9fde2eef2ea7408fb9034d2e1acb1ade06a8c3e"
+        },
+        {
+          "evidence_id": "final_npu_tests_log",
+          "raw_sha256": "5606845817d02a68491a17527e2c19617e10a497baa43932ac4cf7a67b40297b"
+        }
+      ],
+      "test_cases": [
+        {
+          "suite": "test.test_gdn",
+          "test": "test_bf16_qk_normalization_rounding[lengths0-geometry0]",
+          "status": "passed",
+          "duration_seconds": 0.124
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_bf16_qk_normalization_rounding[lengths1-geometry1]",
+          "status": "passed",
+          "duration_seconds": 0.064
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_bf16_qk_normalization_rounding[lengths2-geometry2]",
+          "status": "passed",
+          "duration_seconds": 0.004
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths0-geometry0-dtype0]",
+          "status": "passed",
+          "duration_seconds": 0.136
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths0-geometry0-dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.021
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths1-geometry1-dtype0]",
+          "status": "passed",
+          "duration_seconds": 1.016
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths1-geometry1-dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.999
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths2-geometry2-dtype0]",
+          "status": "passed",
+          "duration_seconds": 0.094
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_float64_reference[lengths2-geometry2-dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.072
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_continuation_and_request_isolation[False]",
+          "status": "passed",
+          "duration_seconds": 0.096
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_continuation_and_request_isolation[True]",
+          "status": "passed",
+          "duration_seconds": 0.078
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_decode_strided_dual_indices_padding_and_reference",
+          "status": "passed",
+          "duration_seconds": 0.083
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_multistep_decode_matches_prefill",
+          "status": "passed",
+          "duration_seconds": 0.032
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_padding_does_not_change_state",
+          "status": "passed",
+          "duration_seconds": 0.025
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_decode_negative_indices_do_not_read_nan_null_state",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_public_dispatch_and_explicit_unsupported_mode",
+          "status": "passed",
+          "duration_seconds": 0.019
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths0-geometry0-dtype0-False]",
+          "status": "passed",
+          "duration_seconds": 0.349
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths0-geometry0-dtype0-True]",
+          "status": "passed",
+          "duration_seconds": 0.018
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths1-geometry1-dtype1-False]",
+          "status": "passed",
+          "duration_seconds": 0.99
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths1-geometry1-dtype1-True]",
+          "status": "passed",
+          "duration_seconds": 0.97
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths2-geometry2-dtype2-False]",
+          "status": "passed",
+          "duration_seconds": 0.061
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths2-geometry2-dtype2-True]",
+          "status": "passed",
+          "duration_seconds": 0.061
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths3-geometry3-dtype3-False]",
+          "status": "passed",
+          "duration_seconds": 0.077
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths3-geometry3-dtype3-True]",
+          "status": "passed",
+          "duration_seconds": 0.053
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths4-geometry4-dtype4-False]",
+          "status": "passed",
+          "duration_seconds": 0.05
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths4-geometry4-dtype4-True]",
+          "status": "passed",
+          "duration_seconds": 0.041
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths5-geometry5-dtype5-False]",
+          "status": "passed",
+          "duration_seconds": 0.075
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_matches_hf512_chunk_order[lengths5-geometry5-dtype5-True]",
+          "status": "passed",
+          "duration_seconds": 0.066
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_decode_matches_hf512_recurrent_order[dtype0]",
+          "status": "passed",
+          "duration_seconds": 0.013
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_decode_matches_hf512_recurrent_order[dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.011
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_gating_public_and_runtime_preserve_parameters[1.0-20.0-dtype0]",
+          "status": "passed",
+          "duration_seconds": 0.014
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_gating_public_and_runtime_preserve_parameters[1.0-20.0-dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_gating_public_and_runtime_preserve_parameters[0.7-1.25-dtype0]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_gating_public_and_runtime_preserve_parameters[0.7-1.25-dtype1]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_custom_scale_and_optional_final_state[0.0]",
+          "status": "passed",
+          "duration_seconds": 0.026
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_custom_scale_and_optional_final_state[0.37]",
+          "status": "passed",
+          "duration_seconds": 0.022
+        },
+        {
+          "suite": "test.test_gdn",
+          "test": "test_prefill_all_empty_requests",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.023
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype0-7]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.077
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype1-7]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[False-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.065
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype0-7]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.075
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype1-7]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_rmsnorm[True-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.075
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gemma_weight_offset_does_not_round_to_bfloat16",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.159
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qk_gemma_rmsnorm_strided_projection[dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.135
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.101
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-False-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.104
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.081
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-False-True-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.076
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.088
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-False-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.078
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.08
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[False-True-True-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.097
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.1
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-False-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.079
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.087
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-False-True-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.086
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.093
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-False-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.091
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype0-3]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.092
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype1-3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_strided[True-True-True-dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.075
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype0-7]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[False-dtype1-7]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype0-7]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_strided_head_view[True-dtype1-7]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_runtime_gemma_boundary_and_weight_loader",
+          "status": "passed",
+          "duration_seconds": 0.007
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_gated_rmsnorm_without_gate_and_unsupported_fp8",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_sigmoid_gate_2d_and_invalid_shape",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.005
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.011
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_gated_norm_hf_rounding[dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype0-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype0-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype0-65]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype1-0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype1-1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_norm_gate",
+          "test": "test_qwen35_sigmoid_gate_hf_rounding[dtype1-65]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_bfloat16_products_are_promoted_before_accumulation",
+          "status": "passed",
+          "duration_seconds": 0.14
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-1]",
+          "status": "passed",
+          "duration_seconds": 0.029
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-2]",
+          "status": "passed",
+          "duration_seconds": 0.026
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-3]",
+          "status": "passed",
+          "duration_seconds": 0.026
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-4]",
+          "status": "passed",
+          "duration_seconds": 0.026
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-5]",
+          "status": "passed",
+          "duration_seconds": 0.025
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-63]",
+          "status": "passed",
+          "duration_seconds": 0.125
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-64]",
+          "status": "passed",
+          "duration_seconds": 0.128
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-65]",
+          "status": "passed",
+          "duration_seconds": 0.13
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-128]",
+          "status": "passed",
+          "duration_seconds": 0.14
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[False-129]",
+          "status": "passed",
+          "duration_seconds": 0.134
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-1]",
+          "status": "passed",
+          "duration_seconds": 0.023
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-2]",
+          "status": "passed",
+          "duration_seconds": 0.023
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-3]",
+          "status": "passed",
+          "duration_seconds": 0.024
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-4]",
+          "status": "passed",
+          "duration_seconds": 0.024
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-5]",
+          "status": "passed",
+          "duration_seconds": 0.024
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-63]",
+          "status": "passed",
+          "duration_seconds": 0.133
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-64]",
+          "status": "passed",
+          "duration_seconds": 0.128
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-65]",
+          "status": "passed",
+          "duration_seconds": 0.121
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-128]",
+          "status": "passed",
+          "duration_seconds": 0.124
+        },
+        {
+          "suite": "test.test_causal_conv_task1",
+          "test": "test_prefill_and_decode_window[True-129]",
+          "status": "passed",
+          "duration_seconds": 0.135
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype0-shape0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype0-shape1]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype0-shape2]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype0-shape3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype0-shape4]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype1-shape0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype1-shape1]",
+          "status": "passed",
+          "duration_seconds": 0.008
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype1-shape2]",
+          "status": "passed",
+          "duration_seconds": 0.042
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype1-shape3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype1-shape4]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype2-shape0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype2-shape1]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype2-shape2]",
+          "status": "passed",
+          "duration_seconds": 0.005
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype2-shape3]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_shapes_and_dtypes[dtype2-shape4]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_strided_input_and_output[rows]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_strided_input_and_output[columns]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_strided_input_and_output[transpose]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_runtime_preserves_intermediate_bf16_rounding",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_empty_out_and_input_alias",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_rejects_invalid_contract[odd]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_rejects_invalid_contract[scalar]",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_rejects_invalid_contract[integer]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_rejects_invalid_contract[out_shape]",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": "test.test_qwen35_activation",
+          "test": "test_qwen35_swiglu_rejects_invalid_contract[out_dtype]",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill[lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.015
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill[lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.043
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill[lengths2]",
+          "status": "passed",
+          "duration_seconds": 0.22
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_paged_decode[lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.144
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_paged_decode[lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.274
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_paged_extend[lengths0-q_lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.129
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_paged_extend[lengths1-q_lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.144
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_partial_rope[False-positions0]",
+          "status": "passed",
+          "duration_seconds": 0.005
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_partial_rope[False-positions1]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_partial_rope[True-positions0]",
+          "status": "passed",
+          "duration_seconds": 0.004
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_partial_rope[True-positions1]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_rope_hf_bfloat16_boundary[False-positions0]",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_rope_hf_bfloat16_boundary[False-positions1]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_rope_hf_bfloat16_boundary[True-positions0]",
+          "status": "passed",
+          "duration_seconds": 0.003
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_rope_hf_bfloat16_boundary[True-positions1]",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.0625-lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.048
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.0625-lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.007
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.0625-lengths2]",
+          "status": "passed",
+          "duration_seconds": 0.024
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.071-lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.004
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.071-lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.006
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_prefill_hf_boundary[0.071-lengths2]",
+          "status": "passed",
+          "duration_seconds": 0.023
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_decode_hf_boundary[lengths0]",
+          "status": "passed",
+          "duration_seconds": 0.031
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_decode_hf_boundary[lengths1]",
+          "status": "passed",
+          "duration_seconds": 0.077
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_decode_null_page_padding_and_readonly_cache",
+          "status": "passed",
+          "duration_seconds": 0.063
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_extend_hf_boundary[lengths0-q_lengths0-False]",
+          "status": "passed",
+          "duration_seconds": 0.044
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_extend_hf_boundary[lengths0-q_lengths0-True]",
+          "status": "passed",
+          "duration_seconds": 0.046
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_extend_hf_boundary[lengths1-q_lengths1-False]",
+          "status": "passed",
+          "duration_seconds": 0.05
+        },
+        {
+          "suite": "test.test_qwen35_attention",
+          "test": "test_qwen35_extend_hf_boundary[lengths1-q_lengths1-True]",
+          "status": "passed",
+          "duration_seconds": 0.051
+        },
+        {
+          "suite": "test.test_mha",
+          "test": "test_mha_prefill",
+          "status": "passed",
+          "duration_seconds": 0.255
+        },
+        {
+          "suite": "test.test_mha",
+          "test": "test_mha_extend_with_paged_cache",
+          "status": "passed",
+          "duration_seconds": 0.007
+        },
+        {
+          "suite": "test.test_mha",
+          "test": "test_mha_decode_with_paged_cache",
+          "status": "passed",
+          "duration_seconds": 0.004
+        },
+        {
+          "suite": "test.test_mha",
+          "test": "test_mha_decode_npugraph_updates_sequence_lengths",
+          "status": "passed",
+          "duration_seconds": 0.039
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_accepts_eager_fp32_state",
+          "status": "passed",
+          "duration_seconds": 0.03
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_graph_mode",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_speculative_decoding[MTP]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_speculative_decoding[EAGLE3]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_speculative_decoding[DUMMY]",
+          "status": "passed",
+          "duration_seconds": 0.01
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_non_fp32_state[bfloat16]",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": "",
+          "test": "test_ascend_gdn_rejects_non_fp32_state[float16]",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": "",
+          "test": "test_other_devices_keep_existing_gdn_modes",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": "",
+          "test": "test_full_attention_only_has_no_gdn_restrictions",
+          "status": "passed",
+          "duration_seconds": 0.009
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_defaults_follow_attn_tp_tp8",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_defaults_follow_attn_tp_dp8",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_hybrid_shape_linear_attn_tp_spans_dp_ranks",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_rank_propagates_to_linear_attn",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_pp_stage_world",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnMappingDefaults",
+          "test": "test_standalone_linear_attn_mapping_complement",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestNoUserFacingParameterYet",
+          "test": "test_server_args_has_no_linear_attn_field",
+          "status": "passed",
+          "duration_seconds": 0.0
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_kimi_k3_geometry",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_qwen35_gdn_geometry",
+          "status": "passed",
+          "duration_seconds": 0.002
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_glm53_flash_kda_geometry",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_non_hybrid_model_gets_none",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_indivisible_heads_raise",
+          "status": "passed",
+          "duration_seconds": 0.001
+        },
+        {
+          "suite": ".TestLinearAttnConfig",
+          "test": "test_registered_alongside_family_configs",
+          "status": "passed",
+          "duration_seconds": 0.348
+        }
+      ]
+    },
+    {
+      "suite": "Harness bookkeeping, numerical protocol and profile parsing",
+      "execution_device": "cpu",
+      "tests": 23,
+      "passed": 23,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_duration_seconds": 6.885,
+      "individual_duration_note": "Per-test duration is not reported by this unittest log.",
+      "sources": [
+        {
+          "evidence_id": "final_harness_tests",
+          "raw_sha256": "5e184630ab9803c6985e343e7b360ac4cf4102c1ede1f2083720b6de888d1f61"
+        }
+      ],
+      "test_cases": [
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.SourceIdentityTests",
+          "test": "test_archive_revision_and_actual_code_changes_are_recorded",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.SourceIdentityTests",
+          "test": "test_invalid_archive_revision_is_rejected",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.SummaryTests",
+          "test": "test_warmup_is_excluded_and_incomplete_matrix_is_not_accepted",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.TimingTests",
+          "test": "test_coalesced_first_frame_does_not_claim_exact_ttft",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.TimingTests",
+          "test": "test_early_eos_or_missing_tokens_is_an_error",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.TimingTests",
+          "test": "test_first_token_is_prefill_and_empty_final_frame_is_not_decode",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_bookkeeping.TimingTests",
+          "test": "test_one_generated_token_has_no_decode_step",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_distinct_views_of_one_storage_are_not_tied_parameters",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_full_vocabulary_metrics_have_reference_l2_denominator",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_nonfinite_logits_are_not_masked",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_only_known_previous_request_extra_decode_is_excluded",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_snapshot_must_match_input_position_phase_and_greedy_token",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_numerical_bookkeeping.NumericalBookkeepingTests",
+          "test": "test_tied_head_storage_is_covered_but_unloaded_parameter_is_missing",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_reference_cache.ReferenceCacheTests",
+          "test": "test_float32_policy_retains_first_and_later_state_without_touching_conv_kv",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_reference_cache.ReferenceCacheTests",
+          "test": "test_model_policy_preserves_stock_bf16_recurrent_rounding",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_reference_cache.ReferenceCacheTests",
+          "test": "test_policies_are_independent_instances_and_do_not_change_global_mapping",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_reference_cache.ReferenceCacheTests",
+          "test": "test_unknown_policy_is_rejected",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_kernel_type_groups_keep_exported_core_and_device",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_large_timestamps_preserve_submicrosecond_intervals",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_operator_self_and_total_stay_distinct",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_overlapping_durations_are_unioned_and_gaps_preserved",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_trace_selects_only_uniquely_linked_device_events",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_profile_analysis.ProfileAnalysisTests",
+          "test": "test_unknown_csv_columns_fail_instead_of_guessing",
+          "status": "passed",
+          "duration_seconds": null
+        }
+      ]
+    },
+    {
+      "suite": "Offline model-download behavior",
+      "execution_device": "cpu",
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_duration_seconds": 0.006,
+      "individual_duration_note": "Per-test duration is not reported by this unittest log.",
+      "sources": [
+        {
+          "evidence_id": "download_offline_repo_tests",
+          "raw_sha256": "558f34e2acbd92f479f91d1f1402a64814a08f06a74d34c47f16c10804654dfa"
+        }
+      ],
+      "test_cases": [
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_bad_hash_preserves_target_and_partial",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_bad_size_is_rejected_even_with_matching_hash",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_interrupted_stream_preserves_target_and_partial",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_manifest_rejects_unsafe_or_unpinned_inputs",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_partial_symlink_cannot_overwrite_file",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_success_replaces_bad_file_after_verification",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_valid_manifest_round_trip_downloads_verified_files",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_download_model.DownloadTests",
+          "test": "test_verified_existing_never_downloaded",
+          "status": "passed",
+          "duration_seconds": null
+        }
+      ]
+    },
+    {
+      "suite": "Real-tokenizer chat input and IPC serialization",
+      "execution_device": "cpu",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suite_duration_seconds": 6.127,
+      "individual_duration_note": "Per-test duration is not reported by this unittest log.",
+      "sources": [
+        {
+          "evidence_id": "chat_input_tests",
+          "raw_sha256": "75e241f7bc5e05b8339a58f84aafbc795baa19c84c0723e11e1ee77204fdb79f"
+        }
+      ],
+      "test_cases": [
+        {
+          "suite": "examples.task1_qwen35.test_chat_input.ChatInputTests",
+          "test": "test_multiturn_unicode_template_remains_flat_and_thinking_disabled",
+          "status": "passed",
+          "duration_seconds": null
+        },
+        {
+          "suite": "examples.task1_qwen35.test_chat_input.ChatInputTests",
+          "test": "test_single_message_is_integer_ids_with_generation_prompt",
+          "status": "passed",
+          "duration_seconds": null
+        }
+      ],
+      "source_note": "This retained tool-output log preserves test outcomes but omits repeated CANN installation-owner warnings, as stated in its own footer."
+    }
+  ],
+  "privacy_note": "Explicit allowlist export; original files are linked by logical evidence ID and SHA256. Private paths, hostnames, user names, process IDs and device process listings are omitted.",
+  "unified_cpu_confirmation": {
+    "tests": 33,
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 6.558,
+    "evidence_id": "final_cpu_combined",
+    "raw_sha256": "36afd94e71bdd9ca353f923f2bd1c683374cb8fc5f619b1451910e81bba717f0",
+    "note": "Final formatted sources including chat input fix; additional confirmation, not added to the 284 unique-test total."
+  }
+}

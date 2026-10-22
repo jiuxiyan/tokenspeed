@@ -27,7 +27,7 @@
 from dataclasses import dataclass
 
 import torch
-from tokenspeed_kernel.ops.activation import silu_and_mul
+from tokenspeed_kernel.ops.activation import qwen35_silu_and_mul, silu_and_mul
 from tokenspeed_kernel.platform import current_platform
 
 from tokenspeed.runtime.utils import (
@@ -112,6 +112,13 @@ class SiluAndMul(torch.nn.Module):
             gate = gate.clamp_max(self.swiglu_limit)
             up = up.clamp(-self.swiglu_limit, self.swiglu_limit)
         return (torch.nn.functional.silu(gate) * up).to(x.dtype)
+
+
+class Qwen35SiluAndMul(torch.nn.Module):
+    """Ascend Qwen3.5 activation with the HF intermediate dtype boundary."""
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return qwen35_silu_and_mul(x)
 
 
 class SituAndMul(torch.nn.Module):

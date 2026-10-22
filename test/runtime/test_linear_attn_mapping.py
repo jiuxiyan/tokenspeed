@@ -101,11 +101,9 @@ class TestLinearAttnConfig:
 
     @staticmethod
     def _server_args(tp_size=1):
-        from types import SimpleNamespace
+        from tokenspeed.runtime.utils.server_args import ServerArgs
 
-        return SimpleNamespace(
-            mapping=SimpleNamespace(linear_attn=SimpleNamespace(tp_size=tp_size))
-        )
+        return ServerArgs(model="x", device="cpu", world_size=tp_size)
 
     @staticmethod
     def _model(text_config):

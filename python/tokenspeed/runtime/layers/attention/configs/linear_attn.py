@@ -140,6 +140,21 @@ class LinearAttnConfig(AttnComponentSpec):
                 tp_size=tp_size,
             )
         # Qwen3.5 GDN: flat fields, asymmetric k/v heads.
+        if server_args.device == "npu":
+            # The correctness baseline performs host-planned eager scans and
+            # has no speculative/checkpoint kernel. Refuse unsupported modes
+            # before allocating cache or attempting device graph capture.
+            if not server_args.enforce_eager:
+                raise ValueError("Ascend Qwen3.5 GDN requires --enforce-eager")
+            if server_args.speculative_algorithm is not None:
+                raise ValueError(
+                    "Ascend Qwen3.5 GDN does not support speculative decoding; "
+                    "remove --speculative-algorithm/--speculative-config"
+                )
+            if server_args.mamba_ssm_dtype != "float32":
+                raise ValueError(
+                    "Ascend Qwen3.5 GDN requires --mamba-ssm-dtype float32"
+                )
         return cls(
             num_k_heads=int(text_config.linear_num_key_heads),
             num_v_heads=int(text_config.linear_num_value_heads),

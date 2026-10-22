@@ -22,8 +22,18 @@
 
 from tokenspeed_kernel_npu.ops.activation import (
     dequant_silu_and_mul_quant,
+    qwen35_sigmoid_mul,
+    qwen35_silu_and_mul,
+    sigmoid_mul,
     silu_and_mul,
     silu_and_mul_quant,
 )
 
-__all__ = ["dequant_silu_and_mul_quant", "silu_and_mul", "silu_and_mul_quant"]
+__all__ = [
+    "dequant_silu_and_mul_quant",
+    "qwen35_sigmoid_mul",
+    "qwen35_silu_and_mul",
+    "sigmoid_mul",
+    "silu_and_mul",
+    "silu_and_mul_quant",
+]

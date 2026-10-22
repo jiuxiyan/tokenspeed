@@ -33,6 +33,53 @@ from tokenspeed_kernel.platform import current_platform, pdl_enabled
 from tokenspeed_kernel.registry import error_fn
 
 
+def sigmoid_mul(
+    x: torch.Tensor, gate: torch.Tensor, head_bias: torch.Tensor | None = None
+) -> torch.Tensor:
+    """Multiply x in place by sigmoid(gate), optionally with per-head bias.
+
+    x is contiguous ``[tokens, width]``; gate may be a strided
+    ``[tokens, heads, head_dim]`` view or a matching 2D tensor.
+    """
+    if current_platform().is_npu:
+        from tokenspeed_kernel.ops.activation.ascend import sigmoid_mul as impl
+    else:
+        from tokenspeed_kernel.ops.activation.triton import sigmoid_mul as impl
+    return impl(x, gate, head_bias=head_bias)
+
+
+def qwen35_sigmoid_mul(x: torch.Tensor, gate: torch.Tensor) -> torch.Tensor:
+    """Ascend Qwen3.5 output gate with activation-dtype sigmoid rounding."""
+    if not current_platform().is_npu:
+        raise NotImplementedError("Qwen3.5 staged sigmoid gate is an Ascend entry")
+    from tokenspeed_kernel.ops.activation.ascend import qwen35_sigmoid_mul as impl
+
+    return impl(x, gate)
+
+
+def qwen35_silu_and_mul(
+    x: torch.Tensor, out: torch.Tensor | None = None
+) -> torch.Tensor:
+    """Ascend Qwen3.5 SwiGLU with activation-dtype intermediate rounding.
+
+    Args:
+        x: NPU BF16, FP16 or FP32 tensor ``[..., gate | up]`` with even width.
+            Leading dimensions and strides are preserved logically.
+        out: Optional output with the same leading shape, half the last width,
+            and the same dtype and device as x. Strided outputs are supported.
+
+    Returns:
+        ``SiLU(gate) * up`` with SiLU rounded to x.dtype before multiplication,
+        written into and returning out when supplied. The input is not changed
+        unless the caller explicitly aliases it with out.
+    """
+    if not current_platform().is_npu:
+        raise NotImplementedError("Qwen3.5 staged SwiGLU is an Ascend entry")
+    from tokenspeed_kernel.ops.activation.ascend import qwen35_silu_and_mul as impl
+
+    return impl(x, out)
+
+
 def silu_and_mul(
     x: torch.Tensor,
     out: torch.Tensor | None = None,
@@ -75,8 +122,11 @@ def situ_and_mul(
 
 
 __all__ = [
+    "qwen35_sigmoid_mul",
+    "qwen35_silu_and_mul",
     "add3",
     "relu2",
+    "sigmoid_mul",
     "silu_and_mul",
     "situ_and_mul",
 ]

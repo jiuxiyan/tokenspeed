@@ -77,6 +77,7 @@ def _causal_conv1d_fwd_kernel(  # continuous batching
     HAS_BIAS: tl.constexpr,
     KERNEL_WIDTH: tl.constexpr,
     SILU_ACTIVATION: tl.constexpr,
+    ROUND_BEFORE_ACTIVATION: tl.constexpr,
     HAS_INITIAL_STATES: tl.constexpr,
     HAS_CACHE: tl.constexpr,
     IS_CONTINUOUS_BATCHING: tl.constexpr,
@@ -385,7 +386,12 @@ def _causal_conv1d_fwd_kernel(  # continuous batching
                     x_ptrs_1d = x_base_1d + idx_token * stride_x_token  # [BLOCK_N]
                     matrix_x = tl.load(x_ptrs_1d, mask=mask_x_1d)
 
-            acc += matrix_x * matrix_w  # [BLOCK_N]
+            if ROUND_BEFORE_ACTIVATION:
+                # Explicit promotion prevents a BF16 product from being
+                # rounded before it reaches the FP32 accumulator.
+                acc += matrix_x.to(tl.float32) * matrix_w.to(tl.float32)
+            else:
+                acc += matrix_x * matrix_w  # [BLOCK_N]
 
         if KERNEL_WIDTH == 2:
             col0 = matrix_x
@@ -397,6 +403,10 @@ def _causal_conv1d_fwd_kernel(  # continuous batching
             col1 = col2
             col2 = matrix_x
 
+        if ROUND_BEFORE_ACTIVATION:
+            # HF's portable convolution materializes its activation-dtype
+            # result before SiLU. Preserve that boundary on Ascend.
+            acc = acc.to(x_ptr.dtype.element_ty).to(tl.float32)
         if SILU_ACTIVATION:
             acc = acc / (1 + tl.exp(-acc))
         mask_1d = (idx_token < segment_len) & (
@@ -455,6 +465,7 @@ def _causal_conv1d_update_kernel(
     HAS_BIAS: tl.constexpr,
     KERNEL_WIDTH: tl.constexpr,
     SILU_ACTIVATION: tl.constexpr,
+    ROUND_BEFORE_ACTIVATION: tl.constexpr,
     IS_CONTINUOUS_BATCHING: tl.constexpr,
     IS_SPEC_DECODING: tl.constexpr,
     NP2_STATELEN: tl.constexpr,
@@ -641,7 +652,10 @@ def _causal_conv1d_update_kernel(
                     x_ptrs_1d = x_base_1d + idx_token * stride_x_token  # [BLOCK_N]
                     matrix_x = tl.load(x_ptrs_1d, mask=mask_x_1d)
 
-            acc += matrix_x * matrix_w  # [BLOCK_N]
+            if ROUND_BEFORE_ACTIVATION:
+                acc += matrix_x.to(tl.float32) * matrix_w.to(tl.float32)
+            else:
+                acc += matrix_x * matrix_w  # [BLOCK_N]
 
         if KERNEL_WIDTH == 2:
             col0 = matrix_x
@@ -653,6 +667,8 @@ def _causal_conv1d_update_kernel(
             col1 = col2
             col2 = matrix_x
 
+        if ROUND_BEFORE_ACTIVATION:
+            acc = acc.to(x_ptr.dtype.element_ty).to(tl.float32)
         if SILU_ACTIVATION:
             acc = acc / (1 + tl.exp(-acc))
         mask_1d = (idx_token < seqlen) & (

@@ -45,7 +45,7 @@ from tokenspeed.runtime.execution.forward_step import (
     get_is_capture_mode,
     get_is_cuda_graph_phase,
 )
-from tokenspeed.runtime.layers.activation import SiluAndMul
+from tokenspeed.runtime.layers.activation import Qwen35SiluAndMul, SiluAndMul
 from tokenspeed.runtime.layers.dense.mxfp4 import Mxfp4LinearMethod
 from tokenspeed.runtime.layers.dense.nvfp4 import Nvfp4LinearMethod
 from tokenspeed.runtime.layers.linear import (
@@ -196,7 +196,7 @@ class Qwen3_5MoeMLP(nn.Module):
                 f"Unsupported activation: {hidden_act}. "
                 "Only silu is supported for now."
             )
-        self.act_fn = SiluAndMul()
+        self.act_fn = Qwen35SiluAndMul() if current_platform().is_npu else SiluAndMul()
 
         self._use_nvfp4_gemm_swiglu_nvfp4_quant = (
             envs.TOKENSPEED_NVFP4_GEMM_SWIGLU_NVFP4_QUANT.get()

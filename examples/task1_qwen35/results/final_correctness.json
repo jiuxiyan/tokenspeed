@@ -1,0 +1,2199 @@
+{
+  "schema_version": 1,
+  "model_id": "Qwen/Qwen3.5-0.8B",
+  "reference_policy": {
+    "name": "matched_fp32_recurrent_state",
+    "reference_state_dtype": "float32",
+    "tokenspeed_recurrent_state_dtype": "float32",
+    "model_weight_dtype": "bfloat16",
+    "conv_cache_dtype": "bfloat16",
+    "kv_cache_dtype": "bfloat16",
+    "unmodified_stock_hf": false,
+    "description": "Official HF equations with instance-local FP32 recurrent-cache allocation from the first prefill; official update copy is unchanged. Conv and KV caches retain the model dtype."
+  },
+  "thresholds": {
+    "max_abs": 0.5,
+    "relative_l2": 0.02,
+    "cosine_min": 0.999,
+    "top1_agreement_min": 0.95
+  },
+  "logit_mask": "No logits are masked: all exact-vocabulary entries must be finite.",
+  "metrics_definition": {
+    "max_abs": "max(abs(engine-reference)) over the complete vocabulary",
+    "rmse": "sqrt(mean((engine-reference)^2))",
+    "relative_l2": "norm(engine-reference,2) / norm(reference,2)",
+    "cosine": "dot(engine,reference) / (norm(engine,2)*norm(reference,2))",
+    "top1_agreement": "fraction of evaluated steps with identical argmax token",
+    "step_scope": "Seven requests, each one prefill and 31 decode forwards; lengths 1,16,128,512 plus A1/B/A2."
+  },
+  "privacy_note": "Explicit allowlist export; original files are linked by logical evidence ID and SHA256. Private paths, hostnames, user names, process IDs and device process listings are omitted.",
+  "evidence_kind": "Final production numerical acceptance, explicit FP32 recurrent-cache reference policy.",
+  "step_metrics_file": "final_correctness_steps.csv",
+  "round": 6,
+  "reference_device": "npu",
+  "environment": {
+    "python": "3.11.16",
+    "packages": {
+      "torch": "2.9.0+cpu",
+      "torch-npu": "2.9.0.post2",
+      "transformers": "5.12.0",
+      "triton-ascend": "3.2.1",
+      "tokenspeed-scheduler": "0.1.40"
+    }
+  },
+  "code_identity": {
+    "baseline_commit": "070dab022dc9879474b37fba2d95ab5d12f0534e",
+    "engine_source_manifest_sha256": "30e25f78dd735593d8dde8cae0df67bae0e258ae529e4c17a87ea6e55ca7ab77",
+    "reference_process_source_manifest_sha256": "30e25f78dd735593d8dde8cae0df67bae0e258ae529e4c17a87ea6e55ca7ab77",
+    "selected_engine_source_sha256": {
+      "python/tokenspeed/runtime/layers/attention/backends/paged/mha.py": "902e6d4ec0093cf6981b01a87f63924ffe480ac6dba6cd97fbd7b6ba02224960",
+      "python/tokenspeed/runtime/layers/attention/backends/state/gdn.py": "1ed47049b7a71e2f54ad3d9048423b342316f486175b65cbee9f3c3e44897f14",
+      "python/tokenspeed/runtime/layers/attention/configs/mha.py": "03bd593fea65de9eed8d62a4c693e59239b61e280a560afdb007150e90f9ff8c",
+      "python/tokenspeed/runtime/layers/attention/kv_cache/hybrid_mha.py": "5fd8c703bde98706a0ca673c30174df1ea51a2696d955180092ed975fe0cfc81",
+      "python/tokenspeed/runtime/layers/attention/kv_cache/mha.py": "9ea202433ea5e43a5b3936f75297b5b8d61620496a85df38e3927ae982c80d26",
+      "python/tokenspeed/runtime/layers/attention/linear/gdn.py": "a6449b64599d0a1bf522d5c2de2e21c597b00edc0bb0d1daa64d52b42f1889f6",
+      "python/tokenspeed/runtime/models/qwen3_5.py": "e2cc5f7d6b26b0309ed573bca98e1343e97dcf1bc7cb395e84f9a35478d2c435",
+      "tokenspeed-kernel/python/tokenspeed_kernel/benchmark/generators/gdn.py": "c6ab86e0737857fad105bf86e04e8b851714f2fa3ec94601734040d389b4a251",
+      "tokenspeed-kernel/python/tokenspeed_kernel/numerics/torch/attention/gdn.py": "b8dc69c573ce6f0719de43dbc6fc2f7183a69bde8a3d83665c17da92dc5a1351",
+      "tokenspeed-kernel/python/tokenspeed_kernel/numerics/torch/attention/mha.py": "0432a637020070ec64eff365a11a2b7658e6de51f84c3e2772e15f51a2c2cf80",
+      "tokenspeed-kernel/python/tokenspeed_kernel/numerics/torch/attention/rmha.py": "21b2158d6459e1d4badce5b1d3cc6f1eacc44b8bfb089f8ad7d25966cdbd985d",
+      "tokenspeed-kernel/python/tokenspeed_kernel/ops/conv/_triton/causal_conv1d.py": "0496e9a04705af005e8b5828a2701cf64ce2c41aead73e46048d1be60d4dd9f8",
+      "tokenspeed-kernel/python/tokenspeed_kernel/ops/layernorm/_triton/gated_rmsnorm.py": "fb8680b6d366fb3263d1b7a3135e48df13173f54e515613e7dc32bf4453e5118",
+      "tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/ops/gdn.py": "78c7219f32cf1bfade85b6b29797f0485a7d87742d5e0981ca2a742c63371de0",
+      "tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/ops/mha.py": "880080384f3f6bc6a692f43b62c1d0c09edc457621ddf2c7f0faf5eda65ef3bb",
+      "tokenspeed-kernel-npu/python/tokenspeed_kernel_npu/thirdparty/qwen35_gdn.py": "b30cf16e94da7660c7c17b3814b87163b943344eaa8232065ea4b4df2a255bde"
+    }
+  },
+  "summary": {
+    "steps": 224,
+    "all_finite": true,
+    "max_abs": 0.328125,
+    "max_relative_l2": 0.019571689888834953,
+    "min_cosine": 0.9998089671134949,
+    "top1_agreement": 1.0,
+    "numeric_failed_steps": 0,
+    "max_abs_exceedances": 0,
+    "relative_l2_exceedances": 0,
+    "cosine_below_minimum": 0
+  },
+  "original_report_status": {
+    "pass": true,
+    "protocol_scope_complete": true,
+    "protocol_pass": true
+  },
+  "request_isolation": {
+    "identical_output_ids": true,
+    "exact_equal_logits": true,
+    "max_abs_by_step": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "source_report": {
+    "evidence_id": "round_06_fp32_reference",
+    "raw_sha256": "cf55a712391a2b5bb13a88f8867bb88b677cdf09b468b80163666e356f71e331"
+  },
+  "source_engine_manifest": {
+    "evidence_id": "round_06_engine_manifest",
+    "raw_sha256": "e837c7436407d64d48f9af60dc612925d023c1ccafdbc7bcacc7cdcb75ace0e5"
+  },
+  "cases": [
+    {
+      "case": "length_1",
+      "input_tokens": 1,
+      "input_ids": [
+        98409
+      ],
+      "input_sha256": "43bf2bc87cac0eec8d26b1a055475d42c00870300e8e2eeff61f753c9128f8cf",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409,
+        96281,
+        98409
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.0,
+        "max_relative_l2": 0.0,
+        "min_cosine": 0.9999749064445496,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_length_1_fixture",
+        "raw_sha256": "dd7aca9c7e55d7dd0794008c8b8cc4f606472869ae7091128bbeca75f3affbbb"
+      }
+    },
+    {
+      "case": "length_16",
+      "input_tokens": 16,
+      "input_ids": [
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822
+      ],
+      "input_sha256": "4d34a4158ed6dd822e2578503f5151fe4f87fdb9b265e491fb9f75118e3f7837",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        95934,
+        103725,
+        95772,
+        103838,
+        103725,
+        97792,
+        97989,
+        95793,
+        98836,
+        98453,
+        96843,
+        97118,
+        98628,
+        10992,
+        271,
+        248068,
+        271,
+        248069,
+        271,
+        98822,
+        95934,
+        103725,
+        109048,
+        95772,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        96843
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.0,
+        "max_relative_l2": 0.0,
+        "min_cosine": 0.9999735355377197,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_length_16_fixture",
+        "raw_sha256": "569dde1076488cdd3b94f64a5d8a7af816de18d5e696ab801d96e2a0518f0899"
+      }
+    },
+    {
+      "case": "length_128",
+      "input_tokens": 128,
+      "input_ids": [
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989
+      ],
+      "input_sha256": "748d163c35bae603448c89961e8ce7b05ac1321ad3596bf1347eedc4be07a82a",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.328125,
+        "max_relative_l2": 0.019571689888834953,
+        "min_cosine": 0.9998089671134949,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_length_128_fixture",
+        "raw_sha256": "25fd417f4312cc790831b0b5fb0d826d6b8cbfb68a704b3350ae5b015b0e351c"
+      }
+    },
+    {
+      "case": "length_512",
+      "input_tokens": 512,
+      "input_ids": [
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710
+      ],
+      "input_sha256": "4b34f0f0fe8ef308fa47e038cf9db8fffcdbe9b91429d6f5b5398d7b8f94305a",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.28125,
+        "max_relative_l2": 0.017893683165311813,
+        "min_cosine": 0.9998472929000854,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_length_512_fixture",
+        "raw_sha256": "66dbf2e3886e50bba074edf18e39d113b7fa5655fdad6e7614f939a3ffbb0811"
+      }
+    },
+    {
+      "case": "A1",
+      "input_tokens": 32,
+      "input_ids": [
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710
+      ],
+      "input_sha256": "cc87b4304f208775bc0e24f25aba2e0c8a9964e6f551ca31e9dfaa9e2463f4d6",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        271,
+        248068,
+        271,
+        248069,
+        271,
+        95772,
+        98409,
+        97792,
+        111834,
+        3709,
+        332,
+        98822,
+        98134,
+        97240,
+        97901,
+        332,
+        95761,
+        99128,
+        96746,
+        98423,
+        98836,
+        5205,
+        96902,
+        98319
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.0,
+        "max_relative_l2": 0.0,
+        "min_cosine": 0.9999749660491943,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_A1_fixture",
+        "raw_sha256": "7ed564ed895106b5c3e6cb9ec513075d3b64bf8ba680d64651375949e8a45c25"
+      }
+    },
+    {
+      "case": "B",
+      "input_tokens": 65,
+      "input_ids": [
+        32,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779,
+        321,
+        33303,
+        9077,
+        13,
+        220,
+        32,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779,
+        321,
+        33303,
+        9077,
+        13,
+        220,
+        32,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779,
+        321,
+        33303,
+        9077,
+        13,
+        220,
+        32,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779,
+        321,
+        33303
+      ],
+      "input_sha256": "500bbf1e61bb9d25a0e3898b7f208577552d74dc64e49aaf2d56ac6cd1f527ab",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        9077,
+        13,
+        220,
+        357,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779,
+        321,
+        33303,
+        9077,
+        13,
+        220,
+        357,
+        2526,
+        3992,
+        1558,
+        11036,
+        264,
+        8240,
+        314,
+        10885,
+        13,
+        79091,
+        4779
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.1875,
+        "max_relative_l2": 0.01658129133284092,
+        "min_cosine": 0.9998489618301392,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_B_fixture",
+        "raw_sha256": "0713500f3624f07eba4dc2d4f220788b612b49e5275a95eca2610dd3bab64f18"
+      }
+    },
+    {
+      "case": "A2",
+      "input_tokens": 32,
+      "input_ids": [
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710,
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        98409,
+        97792,
+        96746,
+        96442,
+        103838,
+        103725,
+        121237,
+        97989,
+        95793,
+        98836,
+        98453,
+        1710
+      ],
+      "input_sha256": "cc87b4304f208775bc0e24f25aba2e0c8a9964e6f551ca31e9dfaa9e2463f4d6",
+      "output_tokens": 32,
+      "decode_steps": 31,
+      "output_ids": [
+        96220,
+        98682,
+        98832,
+        98822,
+        98134,
+        97240,
+        97901,
+        1710,
+        271,
+        248068,
+        271,
+        248069,
+        271,
+        95772,
+        98409,
+        97792,
+        111834,
+        3709,
+        332,
+        98822,
+        98134,
+        97240,
+        97901,
+        332,
+        95761,
+        99128,
+        96746,
+        98423,
+        98836,
+        5205,
+        96902,
+        98319
+      ],
+      "cache_dtype_verified_steps": 32,
+      "cache_dtypes_by_layer": [
+        {
+          "layer": 0,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 1,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 2,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 3,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 4,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 5,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 6,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 7,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 8,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 9,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 10,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 11,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 12,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 13,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 14,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 15,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 16,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 17,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 18,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 19,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        },
+        {
+          "layer": 20,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 21,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 22,
+          "conv": "torch.bfloat16",
+          "recurrent": "torch.float32"
+        },
+        {
+          "layer": 23,
+          "key": "torch.bfloat16",
+          "value": "torch.bfloat16"
+        }
+      ],
+      "summary": {
+        "steps": 32,
+        "all_finite": true,
+        "max_abs": 0.0,
+        "max_relative_l2": 0.0,
+        "min_cosine": 0.9999749660491943,
+        "top1_agreement": 1.0,
+        "numeric_failed_steps": 0,
+        "max_abs_exceedances": 0,
+        "relative_l2_exceedances": 0,
+        "cosine_below_minimum": 0
+      },
+      "excluded_previous_request_forwards": [],
+      "source_fixture": {
+        "evidence_id": "round_06_A2_fixture",
+        "raw_sha256": "3a6afd27d396ebb925056080211883c7228cf15e81973ac70c230a06fa9155de"
+      }
+    }
+  ]
+}

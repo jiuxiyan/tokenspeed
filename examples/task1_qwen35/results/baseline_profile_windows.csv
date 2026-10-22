@@ -1,0 +1,5 @@
+window,input_tokens,phase,request_output_tokens,profiled_model_forward_ms,whole_trace_complete_event_span_us,linked_event_count,linked_summed_duration_us,linked_union_busy_us,linked_span_us,linked_gap_us,linked_largest_gap_us,linked_busy_fraction_within_selected_event_span,linked_overlap_multiplicity_us,kernel_csv_events,unmatched_flows
+input_32_decode,32,decode,8,156.80107986554503,156444.775,2295,12790.8,12790.8,155935.76,143144.96,911.06,0.08202608561371683,0.0,2229,0
+input_32_extend,32,extend,8,388.1788400467485,387965.64,8746,64224.66,64224.66,387743.32,323518.66,522.66,0.1656370508201147,0.0,8674,0
+input_512_decode,512,decode,8,115.14294007793069,114597.88,2295,13242.64,13242.64,114367.22,101124.58,622.7,0.11579052109511799,0.0,2229,0
+input_512_extend,512,extend,8,4259.673269931227,4259496.295,103780,785461.22,785461.22,4259274.5,3473813.28,978.1,0.18441197438671775,0.0,103780,0

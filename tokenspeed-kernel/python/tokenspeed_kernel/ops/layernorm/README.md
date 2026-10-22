@@ -1,4 +1,39 @@
-# Beam layernorm kernels
+# Layernorm kernels
+
+## Ascend Qwen3.5 normalization
+
+`gemma_rmsnorm` computes the statistic and `1 + weight` affine multiplier in
+FP32 on the NPU, then casts once to the activation dtype. Its optional residual
+update materializes the sum in the activation dtype before normalization,
+matching an unfused model boundary. The Q/K norm uses the same FP32 arithmetic
+for a nonzero weight offset; plain RMSNorm keeps the existing Ascend path.
+
+`gated_rmsnorm` selects `ascend_gated_rmsnorm` for Ascend. This initial composed
+implementation uses NPU tensor operations, supports shared per-head or full-row
+weights and both gate orders, and keeps the norm, affine and gate calculation
+in FP32 until the final cast, matching TokenSpeed's existing Triton leaf.
+It accepts BF16, FP16 and FP32; an FP8-output request fails explicitly.
+It does not introduce CPU tensor transfers or device synchronizations.
+
+Qwen3.5 on Ascend instead calls the explicit public `qwen35_gated_rmsnorm`
+entry: FP32 normalization, cast to the activation dtype, weight multiplication
+in that dtype, then FP32 SiLU(gate) multiplication and the final cast. This
+matches Transformers 5.12.0's unfused model boundaries; it is deliberately
+separate from the generic final-only rounding contract. Its full-attention
+output uses `ops.activation.qwen35_sigmoid_mul`, which rounds sigmoid(gate)
+to the activation dtype before the product. CUDA and AMD retain their
+existing fused entries. The extra casts were needed after whole-model
+comparison found that final-only rounding accumulated beyond the predeclared
+logit relative-L2 limit; they are not a relaxation of that limit.
+
+`test/test_qwen35_norm_gate.py` in the NPU package compares the generic public
+entries and runtime Gemma module against CPU numerical results. Additional
+Qwen3.5 tests require exact agreement with the installed official HF gated
+norm on the same device, including non-contiguous projection views, and
+exercise inputs that distinguish staged rounding from the fused result.
+
+
+## Beam layernorm kernels
 
 Beam calls two of its norm kernels directly (`tokenspeed/runtime/models/beam.py`):
 
